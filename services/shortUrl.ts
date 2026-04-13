@@ -1,7 +1,8 @@
 import { BASE_URL, SHORT_CODE_LENGTH } from "@/lib/constants";
 import { ConflictError, NotFoundError, ValidationError } from "@/lib/errors";
+import { generateShortCode } from "@/lib/shortCode";
 import type { ShortLink } from "@/lib/types";
-import { generateShortCode, validateUrl } from "@/lib/validation";
+import { validateUrl } from "@/lib/validation";
 import { insert, select, update } from "@/lib/database";
 
 type DbShortLink = {
@@ -16,6 +17,7 @@ type DbShortLink = {
 };
 
 const SHORT_LINK_TABLE = "short_links";
+const incrementLocks = new Map<string, Promise<void>>();
 
 function toShortLink(row: DbShortLink): ShortLink {
   return {
@@ -90,14 +92,20 @@ export async function resolveShortUrl(code: string): Promise<ShortLink> {
 }
 
 export async function incrementClickCount(code: string): Promise<void> {
-  const found = (await select(SHORT_LINK_TABLE, { code })) as DbShortLink[];
-  const row = found[0];
+  const previous = incrementLocks.get(code) ?? Promise.resolve();
+  const next = previous.then(async () => {
+    const found = (await select(SHORT_LINK_TABLE, { code })) as DbShortLink[];
+    const row = found[0];
 
-  if (!row) {
-    return;
-  }
+    if (!row) {
+      return;
+    }
 
-  await update(SHORT_LINK_TABLE, { code }, { click_count: row.click_count + 1 });
+    await update(SHORT_LINK_TABLE, { code }, { click_count: row.click_count + 1 });
+  });
+
+  incrementLocks.set(code, next.catch(() => undefined));
+  await next;
 }
 
 export function buildShortUrl(code: string): string {

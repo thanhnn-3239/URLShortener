@@ -1,8 +1,5 @@
-import { randomBytes } from "node:crypto";
-import { SHORT_CODE_LENGTH, VALID_DEVICES, VALID_SOURCES } from "@/lib/constants";
+import { VALID_DEVICES, VALID_SOURCES } from "@/lib/constants";
 import type { DeviceType, SourceType } from "@/lib/types";
-
-const BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 export function validateUrl(url: string): boolean {
   try {
@@ -11,17 +8,6 @@ export function validateUrl(url: string): boolean {
   } catch {
     return false;
   }
-}
-
-export function generateShortCode(length = SHORT_CODE_LENGTH): string {
-  const bytes = randomBytes(length);
-  let output = "";
-
-  for (let i = 0; i < length; i += 1) {
-    output += BASE62[bytes[i] % BASE62.length];
-  }
-
-  return output;
 }
 
 export function parseDeviceSource(userAgent?: string | null, referer?: string | null): {

@@ -12,6 +12,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "tsc": "tsc --noEmit",
+    "verify:docker": "docker compose up -d --build && curl -fsS http://localhost:3000/ >/dev/null && curl -fsS http://localhost:3000/api/health >/dev/null",
+    "verify:impl": "bash scripts/verify-post-impl.sh",
     "prepare": "husky"
   },
   "dependencies": {

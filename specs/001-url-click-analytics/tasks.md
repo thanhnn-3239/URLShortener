@@ -83,8 +83,8 @@ public/           # Static assets
 - [X] T023 [P] [US1] Contract test for POST /api/shorten endpoint (request/response validation) in tests/contract/shorten.test.ts
 - [X] T024 [P] [US1] Contract test for GET /api/redirect/[code] endpoint in tests/contract/redirect.test.ts
 - [X] T025 [US1] Integration test for full redirect flow (create URL → redirect → verify destination) in tests/integration/redirect.test.ts
-- [ ] T026 [P] [US1] Component tests for ShortenForm component in tests/component/ShortenForm.test.tsx
-- [ ] T027 [P] [US1] Component tests for ClickToCopy component in tests/component/ClickToCopy.test.tsx
+- [X] T026 [P] [US1] Component tests for ShortenForm component in tests/component/ShortenForm.test.tsx
+- [X] T027 [P] [US1] Component tests for ClickToCopy component in tests/component/ClickToCopy.test.tsx
 
 ### Implementation for User Story 1
 
@@ -92,11 +92,11 @@ public/           # Static assets
 - [X] T029 [P] [US1] Create app/api/shorten/route.ts POST endpoint for URL shortening
 - [X] T030 [P] [US1] Create app/api/redirect/[code]/route.ts GET endpoint for URL redirect
 - [X] T031 [US1] Implement click event recording in redirect handler (basic click_count increment)
-- [ ] T032 [P] [US1] Create components/ShortenForm.tsx with form validation and submission
-- [ ] T033 [P] [US1] Create components/ClickToCopy.tsx for copying short URL to clipboard
-- [ ] T034 [P] [US1] Create app/page.tsx home page with ShortenForm and example short links
-- [ ] T035 [US1] Add validation error handling and user-facing error messages
-- [ ] T036 [US1] Add logging for short URL creation and redirect events (lib/logger.ts or console)
+- [X] T032 [P] [US1] Create components/ShortenForm.tsx with form validation and submission
+- [X] T033 [P] [US1] Create components/ClickToCopy.tsx for copying short URL to clipboard
+- [X] T034 [P] [US1] Create app/page.tsx home page with ShortenForm and example short links
+- [X] T035 [US1] Add validation error handling and user-facing error messages
+- [X] T036 [US1] Add logging for short URL creation and redirect events (lib/logger.ts or console)
 - [X] T037 [US1] Implement database persistence: INSERT short_links, UPDATE click_count on redirect
 
 **Checkpoint**: ✅ User Story 1 complete and independently testable. MVP delivers short URL creation + redirect.
@@ -111,23 +111,23 @@ public/           # Static assets
 
 ### Tests for User Story 2 (REQUIRED) ⚠️
 
-- [ ] T038 [P] [US2] Unit tests for click event classification in tests/unit/clickTracking.test.ts
-- [ ] T039 [P] [US2] Unit tests for analytics aggregation in tests/unit/analytics.test.ts
-- [ ] T040 [P] [US2] Contract test for GET /api/analytics/[code] endpoint in tests/contract/analytics.test.ts
-- [ ] T041 [US2] Integration test for full click tracking flow in tests/integration/tracking.test.ts
-- [ ] T042 [US2] Regression test for concurrent click handling (no duplicate counting) in tests/integration/concurrency.test.ts
+- [X] T038 [P] [US2] Unit tests for click event classification in tests/unit/clickTracking.test.ts
+- [X] T039 [P] [US2] Unit tests for analytics aggregation in tests/unit/analytics.test.ts
+- [X] T040 [P] [US2] Contract test for GET /api/analytics/[code] endpoint in tests/contract/analytics.test.ts
+- [X] T041 [US2] Integration test for full click tracking flow in tests/integration/tracking.test.ts
+- [X] T042 [US2] Regression test for concurrent click handling (no duplicate counting) in tests/integration/concurrency.test.ts
 
 ### Implementation for User Story 2
 
-- [ ] T043 [US2] Create services/clickTracking.ts with recordClick() and parseDeviceSource() functions
-- [ ] T044 [P] [US2] Create app/api/analytics/[code]/route.ts GET endpoint for per-link stats
-- [ ] T045 [US2] Implement click event insertion in clickTracking service (INSERT click_events)
-- [ ] T046 [P] [US2] Create services/analytics.ts with getPerLinkStats() and performanceMetrics functions
-- [ ] T047 [US2] Implement device/source classification from User-Agent and Referer headers
-- [ ] T048 [P] [US2] Add click event logging with source, device, timestamp, IP hash (for debugging)
-- [ ] T049 [US2] Implement data consistency validation (click count vs. event count tolerance <1%)
-- [ ] T050 [US2] Add regression handling: handle missing/unknown device/source gracefully
-- [ ] T051 [US2] Implement concurrent request handling (optimize click_count increments to avoid races)
+- [X] T043 [US2] Create services/clickTracking.ts with recordClick() and parseDeviceSource() functions
+- [X] T044 [P] [US2] Create app/api/analytics/[code]/route.ts GET endpoint for per-link stats
+- [X] T045 [US2] Implement click event insertion in clickTracking service (INSERT click_events)
+- [X] T046 [P] [US2] Create services/analytics.ts with getPerLinkStats() and performanceMetrics functions
+- [X] T047 [US2] Implement device/source classification from User-Agent and Referer headers
+- [X] T048 [P] [US2] Add click event logging with source, device, timestamp, IP hash (for debugging)
+- [X] T049 [US2] Implement data consistency validation (click count vs. event count tolerance <1%)
+- [X] T050 [US2] Add regression handling: handle missing/unknown device/source gracefully
+- [X] T051 [US2] Implement concurrent request handling (optimize click_count increments to avoid races)
 
 **Checkpoint**: ✅ User Story 2 complete. Analytics data collection working, per-link stats retrievable.
 

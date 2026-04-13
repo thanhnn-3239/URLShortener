@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { generateShortCode, validateUrl } from "@/lib/validation";
+import { generateShortCode } from "@/lib/shortCode";
+import { validateUrl } from "@/lib/validation";
 
 describe("validateUrl", () => {
   it("accepts http and https urls", () => {
