@@ -141,22 +141,22 @@ public/           # Static assets
 
 ### Tests for User Story 3 (REQUIRED) ⚠️
 
-- [ ] T052 [P] [US3] Unit tests for dashboard data formatting in tests/unit/dashboard.test.ts
-- [ ] T053 [P] [US3] Contract test for GET /api/dashboard endpoint in tests/contract/dashboard.test.ts
-- [ ] T054 [US3] Integration test for dashboard query consistency (events → aggregates → API response) in tests/integration/dashboard.test.ts
-- [ ] T055 [P] [US3] Component tests for DashboardChart (trend visualization) in tests/component/DashboardChart.test.tsx
-- [ ] T056 [P] [US3] Component tests for TopLinksTable in tests/component/TopLinksTable.test.tsx
-- [ ] T057 [P] [US3] Component tests for DateRangePicker in tests/component/DateRangePicker.test.tsx
+- [X] T052 [P] [US3] Unit tests for dashboard data formatting in tests/unit/dashboard.test.ts
+- [X] T053 [P] [US3] Contract test for GET /api/dashboard endpoint in tests/contract/dashboard.test.ts
+- [X] T054 [US3] Integration test for dashboard query consistency (events → aggregates → API response) in tests/integration/dashboard.test.ts
+- [X] T055 [P] [US3] Component tests for DashboardChart (trend visualization) in tests/component/DashboardChart.test.tsx
+- [X] T056 [P] [US3] Component tests for TopLinksTable in tests/component/TopLinksTable.test.tsx
+- [X] T057 [P] [US3] Component tests for DateRangePicker in tests/component/DateRangePicker.test.tsx
 - [ ] T058 [US3] Performance test: dashboard load time <3s for 30-day range with 1000+ links (load test)
 
 ### Implementation for User Story 3
 
-- [ ] T059 [P] [US3] Create services/analytics.ts with getDashboardData(), aggregateByDay(), aggregateByWeek() functions
-- [ ] T060 [US3] Create app/api/dashboard/route.ts GET endpoint for aggregated analytics
-- [ ] T061 [P] [US3] Create components/DashboardChart.tsx with Chart.js/Recharts for trend visualization
-- [ ] T062 [P] [US3] Create components/TopLinksTable.tsx with sortable table of top links by clicks
-- [ ] T063 [P] [US3] Create components/DateRangePicker.tsx for date range selection (daily/weekly toggle)
-- [ ] T064 [US3] Create app/dashboard/page.tsx dashboard layout with filter controls
+- [X] T059 [P] [US3] Create services/analytics.ts with getDashboardData(), aggregateByDay(), aggregateByWeek() functions
+- [X] T060 [US3] Create app/api/dashboard/route.ts GET endpoint for aggregated analytics
+- [X] T061 [P] [US3] Create components/DashboardChart.tsx with Chart.js/Recharts for trend visualization
+- [X] T062 [P] [US3] Create components/TopLinksTable.tsx with sortable table of top links by clicks
+- [X] T063 [P] [US3] Create components/DateRangePicker.tsx for date range selection (daily/weekly toggle)
+- [X] T064 [US3] Create app/dashboard/page.tsx dashboard layout with filter controls
 - [ ] T065 [US3] Implement materialized view refresh logic (nightly batch or on-demand) in services/analytics.ts
 - [ ] T066 [P] [US3] Add empty state handling when no data in date range
 - [ ] T067 [P] [US3] Add error handling for invalid date ranges

@@ -19,7 +19,8 @@ if [[ "${VERIFY_SKIP_DOCKER:-0}" == "1" ]]; then
 fi
 
 echo "[verify:impl] Building and starting Docker stack"
-docker compose up -d --build
+# Renew anonymous volumes so /app/node_modules is recreated from current package-lock.
+docker compose up -d --build --force-recreate --renew-anon-volumes
 
 check_url() {
   local url="$1"
