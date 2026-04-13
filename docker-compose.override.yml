@@ -1,5 +1,5 @@
 # docker-compose.override.yml - LOCAL CUSTOMIZATIONS (DO NOT COMMIT)
-# 
+#
 # This file is automatically loaded by docker-compose and overrides settings in docker-compose.yml
 # Use this for local customizations:
 # - Different port numbers

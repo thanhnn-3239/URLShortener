@@ -247,7 +247,7 @@ CREATE TABLE short_links (
   expires_at TIMESTAMP DEFAULT NULL,
   is_active BOOLEAN DEFAULT TRUE,
   click_count INTEGER DEFAULT 0,
-  
+
   CONSTRAINT code_format CHECK (code ~ '^[0-9a-zA-Z]{6,8}$'),
   CONSTRAINT valid_url CHECK (destination_url LIKE 'http://%' OR destination_url LIKE 'https://%')
 );
@@ -265,7 +265,7 @@ CREATE TABLE click_events (
   device VARCHAR(50) DEFAULT 'unknown',
   ip_hash VARCHAR(64) DEFAULT NULL,
   user_agent_summary VARCHAR(255) DEFAULT NULL,
-  
+
   CONSTRAINT valid_source CHECK (source IN ('direct', 'referral', 'social', 'search', 'email', 'other', 'unknown')),
   CONSTRAINT valid_device CHECK (device IN ('mobile', 'desktop', 'tablet', 'unknown'))
 );
@@ -394,4 +394,3 @@ Dashboard renders chart + table
 - Alert if `short_links.click_count` diverges >1% from actual event count
 
 ```
-

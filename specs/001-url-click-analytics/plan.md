@@ -20,16 +20,16 @@ Technical approach: Full-stack TypeScript with Next.js API routes for backend lo
 **Testing**: Vitest (unit), React Testing Library (component), Supertest (API integration)
 **Target Platform**: Web (Browser + Server), Vercel or CloudFlare Workers deployment
 **Project Type**: Web service (full-stack Next.js application)
-**Performance Goals**: 
+**Performance Goals**:
   - Redirect response time: p95 <50ms for short URL retrieval and redirect
   - Dashboard load: p95 <3s for 30-day date range (from spec SC-004)
   - Analytics accuracy: <1% daily difference between clicks and redirects (from spec SC-003)
   - Throughput: Support 1000+ concurrent short URL creations and 10k+ simultaneous redirect requests
-**Constraints**: 
+**Constraints**:
   - Redirect latency <50ms (200-250ms total with cold start acceptable for dashboard)
   - Memory footprint <128MB per serverless function
   - Database connection pooling to manage concurrent analytics writes
-**Scale/Scope**: 
+**Scale/Scope**:
   - Initial: 10k-100k short URLs in alpha, <1M clicks/day projected
   - User story coverage: 3 independent, testable slices (P1 create/redirect, P2 click tracking, P3 dashboard)
   - Data modeling: 4 key entities (Short Link, Click Event, Analytics Aggregate, Dashboard View)
@@ -46,7 +46,7 @@ Technical approach: Full-stack TypeScript with Next.js API routes for backend lo
   - Verified: No violation of maintainability principle; each module has focused responsibility
 
 - **Testing Gate** ✅ PASS
-  - Unit tests required: 
+  - Unit tests required:
     - Short URL creation validation and encoding logic
     - Click event parsing and device/source classification
     - Analytics aggregation (daily/weekly rollups)
@@ -54,7 +54,7 @@ Technical approach: Full-stack TypeScript with Next.js API routes for backend lo
     - End-to-end redirect flow (API → database → redirect)
     - Click tracking flow (request → event capture → aggregation)
     - Dashboard data consistency (events → aggregates → queries)
-  - Regression tests required: 
+  - Regression tests required:
     - No duplicate click counting on concurrent requests
     - Correct handling of malformed URLs and non-existent short codes
     - Analytics accuracy within 1% tolerance
@@ -63,7 +63,7 @@ Technical approach: Full-stack TypeScript with Next.js API routes for backend lo
 
 - **UX Consistency Gate** ✅ PASS
   - Affected flows: URL creation form, redirect success/error, analytics dashboard, empty state
-  - Required states to define: 
+  - Required states to define:
     - Loading: Spinner during URL creation, dashboard data fetch
     - Empty: No analytics data for selected date range, zero click links
     - Success: URL copied to clipboard, redirect completion, dashboard rendered
@@ -207,7 +207,7 @@ specs/001-url-click-analytics/
 └── .env.local                   # (gitignored) Local secrets
 ```
 
-**Structure Decision**: 
+**Structure Decision**:
 - **Backend**: Next.js API routes (`/app/api/*`) for serverless deployment (Vercel/CloudFlare Workers compatible)
 - **Frontend**: Next.js App Router pages and React components (same monorepo, deployed together)
 - **Database**: Supabase PostgreSQL with materialized views for fast dashboard aggregations

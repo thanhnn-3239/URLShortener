@@ -8,7 +8,7 @@ This guide walks developers through local setup, running tests, and deploying th
 
 ## Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm 9+ or pnpm 8+ (or yarn 4+)
 - Git
 - Supabase account (free tier available at supabase.com)
