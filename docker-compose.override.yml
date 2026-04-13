@@ -7,9 +7,9 @@
 # - Custom environment variables
 # - Volume mounts for hot-reload
 
-version: '3.9'
+services: {}
 
-services:
+# Example customizations (uncomment to use):
   # Example: Enable PgAdmin UI for database inspection
   # pgadmin:
   #   profiles:

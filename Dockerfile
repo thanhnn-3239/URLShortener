@@ -14,6 +14,16 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
+# Stage 2.5: Development runtime (watch mode)
+FROM node:18-alpine AS dev
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+
+EXPOSE 3000
+CMD ["npm", "run", "dev"]
+
 # Stage 3: Runtime
 FROM node:18-alpine AS runner
 WORKDIR /app

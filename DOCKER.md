@@ -235,13 +235,20 @@ docker-compose up -d --build
 
 ### With Hot Reload
 
-The default docker-compose.yml includes volume mounts for hot-reload:
+The default docker-compose.yml includes volume mounts for hot-reload and uses the Dockerfile `dev` target:
 
 ```bash
 npm run dev  # Inside app container or locally
 
 # Changes to app/ components/ lib/ files auto-reload
 # No container restart needed
+```
+
+If dependencies change, rebuild only the app service:
+
+```bash
+docker-compose build app
+docker-compose up -d app
 ```
 
 ### Running Tests in Docker

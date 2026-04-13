@@ -78,26 +78,26 @@ public/           # Static assets
 
 > **Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T021 [P] [US1] Unit tests for validateUrl() and generateShortCode() in tests/unit/validation.test.ts
-- [ ] T022 [P] [US1] Unit tests for analytics aggregation logic in tests/unit/analytics.test.ts
-- [ ] T023 [P] [US1] Contract test for POST /api/shorten endpoint (request/response validation) in tests/contract/shorten.test.ts
-- [ ] T024 [P] [US1] Contract test for GET /api/redirect/[code] endpoint in tests/contract/redirect.test.ts
-- [ ] T025 [US1] Integration test for full redirect flow (create URL → redirect → verify destination) in tests/integration/redirect.test.ts
+- [X] T021 [P] [US1] Unit tests for validateUrl() and generateShortCode() in tests/unit/validation.test.ts
+- [X] T022 [P] [US1] Unit tests for analytics aggregation logic in tests/unit/analytics.test.ts
+- [X] T023 [P] [US1] Contract test for POST /api/shorten endpoint (request/response validation) in tests/contract/shorten.test.ts
+- [X] T024 [P] [US1] Contract test for GET /api/redirect/[code] endpoint in tests/contract/redirect.test.ts
+- [X] T025 [US1] Integration test for full redirect flow (create URL → redirect → verify destination) in tests/integration/redirect.test.ts
 - [ ] T026 [P] [US1] Component tests for ShortenForm component in tests/component/ShortenForm.test.tsx
 - [ ] T027 [P] [US1] Component tests for ClickToCopy component in tests/component/ClickToCopy.test.tsx
 
 ### Implementation for User Story 1
 
-- [ ] T028 [P] [US1] Create services/shortUrl.ts with createShortUrl() and resolveShortUrl() functions
-- [ ] T029 [P] [US1] Create app/api/shorten/route.ts POST endpoint for URL shortening
-- [ ] T030 [P] [US1] Create app/api/redirect/[code]/route.ts GET endpoint for URL redirect
-- [ ] T031 [US1] Implement click event recording in redirect handler (basic click_count increment)
+- [X] T028 [P] [US1] Create services/shortUrl.ts with createShortUrl() and resolveShortUrl() functions
+- [X] T029 [P] [US1] Create app/api/shorten/route.ts POST endpoint for URL shortening
+- [X] T030 [P] [US1] Create app/api/redirect/[code]/route.ts GET endpoint for URL redirect
+- [X] T031 [US1] Implement click event recording in redirect handler (basic click_count increment)
 - [ ] T032 [P] [US1] Create components/ShortenForm.tsx with form validation and submission
 - [ ] T033 [P] [US1] Create components/ClickToCopy.tsx for copying short URL to clipboard
 - [ ] T034 [P] [US1] Create app/page.tsx home page with ShortenForm and example short links
 - [ ] T035 [US1] Add validation error handling and user-facing error messages
 - [ ] T036 [US1] Add logging for short URL creation and redirect events (lib/logger.ts or console)
-- [ ] T037 [US1] Implement database persistence: INSERT short_links, UPDATE click_count on redirect
+- [X] T037 [US1] Implement database persistence: INSERT short_links, UPDATE click_count on redirect
 
 **Checkpoint**: ✅ User Story 1 complete and independently testable. MVP delivers short URL creation + redirect.
 
