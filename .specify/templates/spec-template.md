@@ -90,6 +90,17 @@
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
 
+### Quality & Experience Requirements *(mandatory)*
+
+- **QR-001 (Code Quality)**: Proposed behavior MUST include clear boundaries, failure handling,
+  and maintainable interfaces.
+- **QR-002 (Testing)**: The feature MUST define required unit, integration, and regression test
+  coverage for each user story.
+- **QR-003 (UX Consistency)**: The feature MUST specify expected loading, empty, success, and
+  error states consistent with existing product language and interaction patterns.
+- **QR-004 (Performance)**: The feature MUST define measurable budgets for relevant user flows
+  (e.g., p95 latency, throughput, memory/CPU constraints).
+
 *Example of marking unclear requirements:*
 
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
@@ -113,6 +124,10 @@
 - **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+- **SC-005**: [UX consistency metric, e.g., "95% of modified screens follow approved states and
+  terminology in review checklist"]
+- **SC-006**: [Performance metric, e.g., "p95 response time for [critical flow] remains under
+  200 ms under expected load"]
 
 ## Assumptions
 
