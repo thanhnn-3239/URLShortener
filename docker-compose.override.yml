@@ -1,0 +1,34 @@
+# docker-compose.override.yml - LOCAL CUSTOMIZATIONS (DO NOT COMMIT)
+#
+# This file is automatically loaded by docker-compose and overrides settings in docker-compose.yml
+# Use this for local customizations:
+# - Different port numbers
+# - Enable optional services (pgadmin, redis)
+# - Custom environment variables
+# - Volume mounts for hot-reload
+
+services: {}
+
+# Example customizations (uncomment to use):
+  # Example: Enable PgAdmin UI for database inspection
+  # pgadmin:
+  #   profiles:
+  #     - dev
+
+  # Example: Enable Redis for future caching
+  # redis:
+  #   profiles:
+  #     - dev
+
+  # Example: Hot-reload for development
+  # app:
+  #   volumes:
+  #     - .:/app
+  #     - /app/node_modules
+  #     - /app/.next
+  #   command: npm run dev
+
+  # Example: Use different ports
+  # app:
+  #   ports:
+  #     - "3001:3000"
