@@ -3,16 +3,20 @@ import { GET as getDashboard } from "@/app/api/dashboard/route";
 import { POST } from "@/app/api/shorten/route";
 import { GET as redirect } from "@/app/api/redirect/[code]/route";
 import { resetTables } from "@/lib/database";
+import { clearDashboardCache } from "@/services/analytics";
 
 describe("GET /api/dashboard", () => {
   it("returns dashboard payload with expected shape", async () => {
     resetTables();
+    clearDashboardCache();
 
     const createResponse = await POST(
       new Request("http://localhost:3000/api/shorten", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ destination_url: "https://example.com/dashboard-shape" })
+        body: JSON.stringify({
+          destination_url: "https://example.com/dashboard-shape"
+        })
       })
     );
     const created = await createResponse.json();
@@ -20,14 +24,17 @@ describe("GET /api/dashboard", () => {
     await redirect(
       new Request(`http://localhost:3000/api/redirect/${created.code}`, {
         headers: {
-          "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
+          "user-agent":
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
           referer: "https://twitter.com/post/1"
         }
       }),
       { params: { code: created.code } }
     );
 
-    const response = await getDashboard(new Request("http://localhost:3000/api/dashboard") as any);
+    const response = await getDashboard(
+      new Request("http://localhost:3000/api/dashboard") as any
+    );
     const data = await response.json();
 
     expect(response.status).toBe(200);
@@ -42,9 +49,12 @@ describe("GET /api/dashboard", () => {
 
   it("returns 400 for invalid date format", async () => {
     resetTables();
+    clearDashboardCache();
 
     const response = await getDashboard(
-      new Request("http://localhost:3000/api/dashboard?startDate=invalid-date") as any
+      new Request(
+        "http://localhost:3000/api/dashboard?startDate=invalid-date"
+      ) as any
     );
     const data = await response.json();
 
@@ -54,9 +64,12 @@ describe("GET /api/dashboard", () => {
 
   it("returns 400 when endDate is before startDate", async () => {
     resetTables();
+    clearDashboardCache();
 
     const response = await getDashboard(
-      new Request("http://localhost:3000/api/dashboard?startDate=2026-04-13&endDate=2026-04-01") as any
+      new Request(
+        "http://localhost:3000/api/dashboard?startDate=2026-04-13&endDate=2026-04-01"
+      ) as any
     );
     const data = await response.json();
 
@@ -66,6 +79,7 @@ describe("GET /api/dashboard", () => {
 
   it("returns top links sorted by click_count descending", async () => {
     resetTables();
+    clearDashboardCache();
 
     const first = await POST(
       new Request("http://localhost:3000/api/shorten", {
@@ -85,21 +99,45 @@ describe("GET /api/dashboard", () => {
     );
     const secondLink = await second.json();
 
-    await redirect(new Request(`http://localhost:3000/api/redirect/${firstLink.code}`), {
-      params: { code: firstLink.code }
-    });
+    await redirect(
+      new Request(`http://localhost:3000/api/redirect/${firstLink.code}`),
+      {
+        params: { code: firstLink.code }
+      }
+    );
 
-    await redirect(new Request(`http://localhost:3000/api/redirect/${secondLink.code}`), {
-      params: { code: secondLink.code }
-    });
-    await redirect(new Request(`http://localhost:3000/api/redirect/${secondLink.code}`), {
-      params: { code: secondLink.code }
-    });
+    await redirect(
+      new Request(`http://localhost:3000/api/redirect/${secondLink.code}`),
+      {
+        params: { code: secondLink.code }
+      }
+    );
+    await redirect(
+      new Request(`http://localhost:3000/api/redirect/${secondLink.code}`),
+      {
+        params: { code: secondLink.code }
+      }
+    );
 
-    const response = await getDashboard(new Request("http://localhost:3000/api/dashboard") as any);
+    const response = await getDashboard(
+      new Request("http://localhost:3000/api/dashboard") as any
+    );
     const data = await response.json();
 
     expect(response.status).toBe(200);
-    expect(data.topLinks[0].click_count).toBeGreaterThanOrEqual(data.topLinks[1].click_count);
+    expect(data.topLinks[0].click_count).toBeGreaterThanOrEqual(
+      data.topLinks[1].click_count
+    );
+  });
+
+  it("accepts refresh=1 query for on-demand materialized view refresh", async () => {
+    resetTables();
+    clearDashboardCache();
+
+    const response = await getDashboard(
+      new Request("http://localhost:3000/api/dashboard?refresh=1") as any
+    );
+
+    expect(response.status).toBe(200);
   });
 });

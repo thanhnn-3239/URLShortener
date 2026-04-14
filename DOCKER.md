@@ -53,11 +53,11 @@ docker-compose logs -f postgres
 
 ### Accessing Services
 
-| Service | URL | Credentials |
-|---------|-----|-------------|
-| Next.js App | http://localhost:3000 | - |
-| PostgreSQL | localhost:5432 | user: postgres, pass: postgres |
-| PgAdmin | http://localhost:5050 | admin@example.com / admin |
+| Service     | URL                   | Credentials                    |
+| ----------- | --------------------- | ------------------------------ |
+| Next.js App | http://localhost:3000 | -                              |
+| PostgreSQL  | localhost:5432        | user: postgres, pass: postgres |
+| PgAdmin     | http://localhost:5050 | admin@example.com / admin      |
 
 ---
 
@@ -155,18 +155,18 @@ This file is auto-loaded and gitignored:
 
 ```yaml
 # docker-compose.override.yml
-version: '3.9'
+version: "3.9"
 
 services:
   app:
     ports:
-      - "3001:3000"  # Use different port
+      - "3001:3000" # Use different port
     environment:
-      DEBUG: "true"   # Add debugging
+      DEBUG: "true" # Add debugging
 
   postgres:
     environment:
-      POSTGRES_PASSWORD: "my-secure-password"  # Custom password
+      POSTGRES_PASSWORD: "my-secure-password" # Custom password
 ```
 
 ### Enable Optional Services
@@ -326,6 +326,7 @@ kubectl apply -f k8s/deployment.yaml
 ## Best Practices
 
 1. **Use named volumes for persistence**: Data survives container restarts
+
    ```bash
    docker-compose down  # Removes containers, keeps data
    docker-compose down -v  # Removes containers AND data

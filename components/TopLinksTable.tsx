@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useState, useCallback } from 'react';
-import { Copy, ExternalLink } from 'lucide-react';
+import React, { useState, useCallback } from "react";
+import { Copy, ExternalLink } from "lucide-react";
 
-type SortKey = 'code' | 'destination_url' | 'click_count';
-type SortOrder = 'asc' | 'desc';
+type SortKey = "code" | "destination_url" | "click_count";
+type SortOrder = "asc" | "desc";
 
 interface TopLink {
   code: string;
@@ -17,19 +17,25 @@ interface TopLinksTableProps {
   onLinkClick?: (code: string) => void;
 }
 
-export default function TopLinksTable({ links, onLinkClick }: TopLinksTableProps) {
-  const [sortKey, setSortKey] = useState<SortKey>('click_count');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
+export default function TopLinksTable({
+  links,
+  onLinkClick
+}: TopLinksTableProps) {
+  const [sortKey, setSortKey] = useState<SortKey>("click_count");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
-  const handleSort = useCallback((key: SortKey) => {
-    if (sortKey === key) {
-      setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc');
-    } else {
-      setSortKey(key);
-      setSortOrder('desc');
-    }
-  }, [sortKey, sortOrder]);
+  const handleSort = useCallback(
+    (key: SortKey) => {
+      if (sortKey === key) {
+        setSortOrder(sortOrder === "desc" ? "asc" : "desc");
+      } else {
+        setSortKey(key);
+        setSortOrder("desc");
+      }
+    },
+    [sortKey, sortOrder]
+  );
 
   const handleCopyCode = useCallback(async (code: string) => {
     try {
@@ -37,7 +43,7 @@ export default function TopLinksTable({ links, onLinkClick }: TopLinksTableProps
       setCopiedCode(code);
       setTimeout(() => setCopiedCode(null), 2000);
     } catch (error) {
-      console.error('Failed to copy:', error);
+      console.error("Failed to copy:", error);
     }
   }, []);
 
@@ -46,13 +52,13 @@ export default function TopLinksTable({ links, onLinkClick }: TopLinksTableProps
       let aVal: string | number = a[sortKey];
       let bVal: string | number = b[sortKey];
 
-      if (typeof aVal === 'string' && typeof bVal === 'string') {
+      if (typeof aVal === "string" && typeof bVal === "string") {
         aVal = aVal.toLowerCase();
         bVal = bVal.toLowerCase();
       }
 
-      if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1;
-      if (aVal > bVal) return sortOrder === 'asc' ? 1 : -1;
+      if (aVal < bVal) return sortOrder === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortOrder === "asc" ? 1 : -1;
       return 0;
     });
 
@@ -64,13 +70,21 @@ export default function TopLinksTable({ links, onLinkClick }: TopLinksTableProps
       <div className="rounded-lg border border-gray-200 bg-white p-8 text-center shadow-sm">
         <div className="text-gray-500">
           <p className="text-lg font-semibold">No short links yet</p>
-          <p className="text-sm">Create a short link to start tracking clicks</p>
+          <p className="text-sm">
+            Create a short link to start tracking clicks
+          </p>
         </div>
       </div>
     );
   }
 
-  const SortHeader = ({ label, sortKey: key }: { label: string; sortKey: SortKey }) => (
+  const SortHeader = ({
+    label,
+    sortKey: key
+  }: {
+    label: string;
+    sortKey: SortKey;
+  }) => (
     <th className="cursor-pointer select-none px-6 py-3 text-left text-sm font-semibold text-gray-900 hover:bg-gray-50">
       <button
         onClick={() => handleSort(key)}
@@ -78,7 +92,7 @@ export default function TopLinksTable({ links, onLinkClick }: TopLinksTableProps
       >
         {label}
         <span className="text-gray-400">
-          {sortKey === key && (sortOrder === 'desc' ? '↓' : '↑')}
+          {sortKey === key && (sortOrder === "desc" ? "↓" : "↑")}
         </span>
       </button>
     </th>
@@ -129,7 +143,11 @@ export default function TopLinksTable({ links, onLinkClick }: TopLinksTableProps
                     >
                       <Copy
                         size={16}
-                        className={copiedCode === link.code ? 'text-green-600' : 'text-gray-400'}
+                        className={
+                          copiedCode === link.code
+                            ? "text-green-600"
+                            : "text-gray-400"
+                        }
                       />
                     </button>
                   </div>

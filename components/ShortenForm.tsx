@@ -36,7 +36,9 @@ export function ShortenForm() {
         },
         body: JSON.stringify({ destination_url: destinationUrl })
       });
-      const payload = (await response.json()) as FormResult & { message?: string };
+      const payload = (await response.json()) as FormResult & {
+        message?: string;
+      };
 
       if (!response.ok) {
         throw new Error(payload.message ?? "Failed to create short URL");
@@ -45,7 +47,9 @@ export function ShortenForm() {
       setResult(payload);
     } catch (error) {
       setResult(null);
-      setErrorMessage(error instanceof Error ? error.message : "Failed to create short URL");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Failed to create short URL"
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -54,16 +58,24 @@ export function ShortenForm() {
   return (
     <div className="rounded-[2rem] border border-sky-100 bg-white/90 p-6 shadow-[0_24px_80px_rgba(15,23,42,0.12)] backdrop-blur sm:p-8">
       <div className="max-w-2xl">
-        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-700">Fast link launch</p>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">Shorten a URL and share it immediately.</h2>
+        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-sky-700">
+          Fast link launch
+        </p>
+        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+          Shorten a URL and share it immediately.
+        </h2>
         <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">
-          Paste a destination link, generate a compact short URL, then copy it for campaigns, chats, and docs.
+          Paste a destination link, generate a compact short URL, then copy it
+          for campaigns, chats, and docs.
         </p>
       </div>
 
       <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="destination-url" className="mb-2 block text-sm font-medium text-slate-700">
+          <label
+            htmlFor="destination-url"
+            className="mb-2 block text-sm font-medium text-slate-700"
+          >
             Destination URL
           </label>
           <input
@@ -85,7 +97,9 @@ export function ShortenForm() {
           >
             {isSubmitting ? "Creating..." : "Shorten URL"}
           </button>
-          <p className="text-sm text-slate-500">Generated links are available instantly and ready to track.</p>
+          <p className="text-sm text-slate-500">
+            Generated links are available instantly and ready to track.
+          </p>
         </div>
       </form>
 
@@ -99,14 +113,18 @@ export function ShortenForm() {
         <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4 sm:p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-emerald-800">Short URL is ready</p>
+              <p className="text-sm font-semibold text-emerald-800">
+                Short URL is ready
+              </p>
               <input
                 readOnly
                 aria-label="Generated short URL"
                 value={result.short_url}
                 className="mt-2 h-12 w-full rounded-xl border border-emerald-200 bg-white px-4 text-sm font-medium text-slate-900 outline-none"
               />
-              <p className="mt-2 truncate text-sm text-slate-600">Target: {result.destination_url}</p>
+              <p className="mt-2 truncate text-sm text-slate-600">
+                Target: {result.destination_url}
+              </p>
             </div>
             <ClickToCopy value={result.short_url} />
           </div>

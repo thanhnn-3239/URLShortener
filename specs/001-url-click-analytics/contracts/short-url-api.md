@@ -13,11 +13,12 @@
 ```json
 {
   "destination_url": "https://www.example.com/some/very/long/url?param1=value1&param2=value2",
-  "expires_at": "2026-12-31T23:59:59Z"  // optional
+  "expires_at": "2026-12-31T23:59:59Z" // optional
 }
 ```
 
 **Validation Rules**:
+
 - `destination_url`: Required, must be valid HTTP/HTTPS URL
 - `expires_at`: Optional, if provided must be future timestamp
 
@@ -37,6 +38,7 @@
 ### Error Responses
 
 **400 Bad Request** - Invalid or missing destination_url
+
 ```json
 {
   "error": "invalid_url",
@@ -45,6 +47,7 @@
 ```
 
 **409 Conflict** - Short code collision (after 3 retries)
+
 ```json
 {
   "error": "code_generation_failed",
@@ -53,6 +56,7 @@
 ```
 
 **500 Internal Server Error** - Database error
+
 ```json
 {
   "error": "internal_error",
@@ -76,6 +80,7 @@ Referer: https://twitter.com/...  // optional
 ```
 
 **URL Parameters**:
+
 - `code`: Short code (6-8 alphanumeric characters)
 
 ### Response (302 Found)
@@ -87,6 +92,7 @@ Set-Cookie: _shrt_rid=<request-id>; Path=/; HttpOnly; SameSite=Lax
 ```
 
 **Side Effects**:
+
 1. Record click event to click_events table
 2. Increment short_links.click_count (denormalized counter)
 3. Extract and classify source (direct, referral, social, search, etc.)
@@ -95,6 +101,7 @@ Set-Cookie: _shrt_rid=<request-id>; Path=/; HttpOnly; SameSite=Lax
 ### Error Responses
 
 **404 Not Found** - Short code doesn't exist
+
 ```
 HTTP/1.1 404 Not Found
 Content-Type: application/json
@@ -106,6 +113,7 @@ Content-Type: application/json
 ```
 
 **410 Gone** - Short URL expired or deleted
+
 ```
 HTTP/1.1 410 Gone
 Content-Type: application/json
@@ -117,6 +125,7 @@ Content-Type: application/json
 ```
 
 **500 Internal Server Error** - Database error (still redirect on best-effort)
+
 ```
 HTTP/1.1 500 Internal Server Error
 Content-Type: application/json
@@ -141,9 +150,11 @@ Host: shrt.domain.com
 ```
 
 **URL Parameters**:
+
 - `code`: Short code (6-8 alphanumeric characters)
 
 **Query Parameters**:
+
 - `start_date`: ISO 8601 date (e.g., 2026-03-13) - optional, default: 30 days ago
 - `end_date`: ISO 8601 date (e.g., 2026-04-13) - optional, default: today
 
@@ -182,6 +193,7 @@ Host: shrt.domain.com
 ### Error Responses
 
 **404 Not Found** - Short code doesn't exist
+
 ```json
 {
   "error": "not_found",
@@ -190,6 +202,7 @@ Host: shrt.domain.com
 ```
 
 **400 Bad Request** - Invalid date parameters
+
 ```json
 {
   "error": "invalid_params",
@@ -213,6 +226,7 @@ All errors follow this format:
 ```
 
 **Error Codes**:
+
 - `invalid_url` - Malformed or unsupported URL
 - `invalid_params` - Query/body parameters failed validation
 - `not_found` - Resource doesn't exist
@@ -228,6 +242,7 @@ All errors follow this format:
 **Not yet implemented** (future enhancement)
 
 Anticipated limits:
+
 - Create short URL: 100 requests/hour per user
 - Redirect: No limit (public endpoint)
 - Analytics: 50 requests/minute per user
@@ -239,6 +254,7 @@ Anticipated limits:
 **Current**: None (public service)
 
 **Future**:
+
 - Bearer token JWT for protected endpoints (create, analytics, delete)
 - Owner-only access to analytics for their own links
 - Admin access to global dashboard statistics
@@ -263,6 +279,7 @@ Cache-Control: public, max-age=300  // for GET requests only
 ## Example cURL Commands
 
 ### Create short URL
+
 ```bash
 curl -X POST https://shrt.domain.com/api/shorten \
   -H "Content-Type: application/json" \
@@ -273,11 +290,13 @@ curl -X POST https://shrt.domain.com/api/shorten \
 ```
 
 ### Redirect (follows automatically)
+
 ```bash
 curl -L https://shrt.domain.com/api/redirect/abc123
 ```
 
 ### Get analytics
+
 ```bash
 curl "https://shrt.domain.com/api/analytics/abc123?start_date=2026-03-13&end_date=2026-04-13"
 ```

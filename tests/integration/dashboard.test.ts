@@ -3,16 +3,20 @@ import { POST } from "@/app/api/shorten/route";
 import { GET as redirect } from "@/app/api/redirect/[code]/route";
 import { GET as getDashboard } from "@/app/api/dashboard/route";
 import { resetTables } from "@/lib/database";
+import { clearDashboardCache } from "@/services/analytics";
 
 describe("dashboard integration", () => {
   it("keeps dashboard totals consistent with created click events", async () => {
     resetTables();
+    clearDashboardCache();
 
     const createResponse = await POST(
       new Request("http://localhost:3000/api/shorten", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ destination_url: "https://example.com/dashboard-integration" })
+        body: JSON.stringify({
+          destination_url: "https://example.com/dashboard-integration"
+        })
       })
     );
     const created = await createResponse.json();
@@ -30,7 +34,8 @@ describe("dashboard integration", () => {
     await redirect(
       new Request(`http://localhost:3000/api/redirect/${created.code}`, {
         headers: {
-          "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
+          "user-agent":
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
           referer: "https://twitter.com/post/2"
         }
       }),
@@ -38,7 +43,9 @@ describe("dashboard integration", () => {
     );
 
     const response = await getDashboard(
-      new Request("http://localhost:3000/api/dashboard?startDate=2026-01-01&endDate=2026-12-31") as any
+      new Request(
+        "http://localhost:3000/api/dashboard?startDate=2026-01-01&endDate=2026-12-31"
+      ) as any
     );
     const data = await response.json();
 
@@ -52,22 +59,30 @@ describe("dashboard integration", () => {
 
   it("applies date range filtering for dashboard aggregation", async () => {
     resetTables();
+    clearDashboardCache();
 
     const createResponse = await POST(
       new Request("http://localhost:3000/api/shorten", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ destination_url: "https://example.com/dashboard-filter" })
+        body: JSON.stringify({
+          destination_url: "https://example.com/dashboard-filter"
+        })
       })
     );
     const created = await createResponse.json();
 
-    await redirect(new Request(`http://localhost:3000/api/redirect/${created.code}`), {
-      params: { code: created.code }
-    });
+    await redirect(
+      new Request(`http://localhost:3000/api/redirect/${created.code}`),
+      {
+        params: { code: created.code }
+      }
+    );
 
     const invalidRangeResponse = await getDashboard(
-      new Request("http://localhost:3000/api/dashboard?startDate=2026-05-10&endDate=2026-05-01") as any
+      new Request(
+        "http://localhost:3000/api/dashboard?startDate=2026-05-10&endDate=2026-05-01"
+      ) as any
     );
 
     expect(invalidRangeResponse.status).toBe(400);

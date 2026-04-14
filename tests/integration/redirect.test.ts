@@ -16,12 +16,17 @@ describe("redirect integration", () => {
     const createResponse = await POST(createRequest);
     const created = await createResponse.json();
 
-    const redirectResponse = await GET(new Request("http://localhost:3000/api/redirect/" + created.code), {
-      params: { code: created.code }
-    });
+    const redirectResponse = await GET(
+      new Request("http://localhost:3000/api/redirect/" + created.code),
+      {
+        params: { code: created.code }
+      }
+    );
 
     expect(redirectResponse.status).toBe(302);
-    expect(redirectResponse.headers.get("location")).toBe("https://example.com/full-flow");
+    expect(redirectResponse.headers.get("location")).toBe(
+      "https://example.com/full-flow"
+    );
 
     const links = await select("short_links", { code: created.code });
     expect(links[0]?.click_count).toBe(1);

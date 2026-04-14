@@ -12,7 +12,9 @@ describe("click tracking integration", () => {
       new Request("http://localhost:3000/api/shorten", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ destination_url: "https://example.com/tracking" })
+        body: JSON.stringify({
+          destination_url: "https://example.com/tracking"
+        })
       })
     );
     const created = await createResponse.json();

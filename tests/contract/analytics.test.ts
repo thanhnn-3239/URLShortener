@@ -20,7 +20,8 @@ describe("GET /api/analytics/[code]", () => {
     await redirect(
       new Request(`http://localhost:3000/api/redirect/${created.code}`, {
         headers: {
-          "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
+          "user-agent":
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
           referer: "https://twitter.com/post/1"
         }
       }),
@@ -45,8 +46,23 @@ describe("GET /api/analytics/[code]", () => {
     resetTables();
 
     const response = await getAnalytics(
-      new Request("http://localhost:3000/api/analytics/missing?start_date=2026-04-15&end_date=2026-04-01"),
+      new Request(
+        "http://localhost:3000/api/analytics/missing?start_date=2026-04-15&end_date=2026-04-01"
+      ),
       { params: { code: "missing" } }
+    );
+    const data = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(data.error).toBe("invalid_params");
+  });
+
+  it("returns 400 when code is empty", async () => {
+    resetTables();
+
+    const response = await getAnalytics(
+      new Request("http://localhost:3000/api/analytics/"),
+      { params: { code: "" } }
     );
     const data = await response.json();
 

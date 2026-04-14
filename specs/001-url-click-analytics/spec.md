@@ -5,7 +5,7 @@
 **Status**: Draft
 **Input**: User description: "Yeu cau: Xay dung dich vu rut gon URL, co click analytics. Mo ta: Nguoi dung tao Short URL, he thong theo doi so lan click, nguon, thiet bi (gian luoc). Co dashboard thong ke theo ngay/tuan, top links."
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 <!--
   IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
@@ -34,9 +34,9 @@ duyet, va xac nhan chuyen huong dung den URL goc.
 **Acceptance Scenarios**:
 
 1. **Given** nguoi dung cung cap URL hop le, **When** gui yeu cau tao short URL, **Then** he thong
-  tra ve short URL duy nhat va co the su dung ngay.
+   tra ve short URL duy nhat va co the su dung ngay.
 2. **Given** short URL ton tai, **When** nguoi dung truy cap short URL, **Then** he thong chuyen
-  huong den URL goc da luu.
+   huong den URL goc da luu.
 
 ---
 
@@ -54,9 +54,9 @@ tin nguon va thiet bi khac nhau, va xac minh so lieu tong hop duoc cap nhat dung
 **Acceptance Scenarios**:
 
 1. **Given** short URL da ton tai, **When** phat sinh click hop le, **Then** he thong tang bo dem
-  click va ghi nhan nguon + thiet bi cho click do.
+   click va ghi nhan nguon + thiet bi cho click do.
 2. **Given** nhieu click tu cac nguon/thiet bi khac nhau, **When** nguoi dung xem thong tin chi
-  tiet cua link, **Then** he thong hien thi tong click va phan bo theo nguon/thiet bi.
+   tiet cua link, **Then** he thong hien thi tong click va phan bo theo nguon/thiet bi.
 
 ---
 
@@ -74,11 +74,11 @@ mo dashboard, va xac minh bieu do/tong hop theo ngay-tuan cung danh sach top lin
 **Acceptance Scenarios**:
 
 1. **Given** du lieu click da duoc ghi nhan qua nhieu ngay, **When** nguoi dung chon che do xem
-  theo ngay, **Then** dashboard hien thi so click tung ngay trong khoang thoi gian da chon.
+   theo ngay, **Then** dashboard hien thi so click tung ngay trong khoang thoi gian da chon.
 2. **Given** du lieu click da duoc ghi nhan, **When** nguoi dung chon che do xem theo tuan,
-  **Then** dashboard hien thi tong click theo tung tuan.
+   **Then** dashboard hien thi tong click theo tung tuan.
 3. **Given** co nhieu short URL voi so luot click khac nhau, **When** dashboard tai du lieu,
-  **Then** dashboard hien thi top links theo thu tu giam dan cua tong so click.
+   **Then** dashboard hien thi top links theo thu tu giam dan cua tong so click.
 
 ---
 
@@ -96,7 +96,7 @@ mo dashboard, va xac minh bieu do/tong hop theo ngay-tuan cung danh sach top lin
 - Khoang thoi gian dashboard khong co du lieu click.
 - Nhieu links co cung tong click tai vi tri canh tranh trong top links.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 <!--
   ACTION REQUIRED: The content in this section represents placeholders.
@@ -123,7 +123,7 @@ mo dashboard, va xac minh bieu do/tong hop theo ngay-tuan cung danh sach top lin
 - **FR-010**: System MUST return a not-found response for non-existent short URLs without exposing
   internal system details.
 
-### Quality & Experience Requirements *(mandatory)*
+### Quality & Experience Requirements _(mandatory)_
 
 - **QR-001 (Code Quality)**: Proposed behavior MUST include clear boundaries, failure handling,
   and maintainable interfaces.
@@ -134,7 +134,7 @@ mo dashboard, va xac minh bieu do/tong hop theo ngay-tuan cung danh sach top lin
 - **QR-004 (Performance)**: The feature MUST define measurable budgets for relevant user flows
   (e.g., p95 latency, throughput, memory/CPU constraints).
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Short Link**: Represents the mapping from a generated short code to a destination URL, plus
   creation metadata and status.
@@ -145,7 +145,7 @@ mo dashboard, va xac minh bieu do/tong hop theo ngay-tuan cung danh sach top lin
 - **Dashboard View**: Represents user-facing analytics output for selected date range,
   including trend series and ranked top links.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 <!--
   ACTION REQUIRED: Define measurable success criteria.

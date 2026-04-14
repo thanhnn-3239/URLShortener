@@ -12,16 +12,21 @@ describe("redirect concurrency", () => {
       new Request("http://localhost:3000/api/shorten", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ destination_url: "https://example.com/concurrency" })
+        body: JSON.stringify({
+          destination_url: "https://example.com/concurrency"
+        })
       })
     );
     const created = await createResponse.json();
 
     await Promise.all(
       Array.from({ length: 25 }, () =>
-        redirect(new Request(`http://localhost:3000/api/redirect/${created.code}`), {
-          params: { code: created.code }
-        })
+        redirect(
+          new Request(`http://localhost:3000/api/redirect/${created.code}`),
+          {
+            params: { code: created.code }
+          }
+        )
       )
     );
 

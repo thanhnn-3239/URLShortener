@@ -1,4 +1,11 @@
-export type SourceType = "direct" | "referral" | "social" | "search" | "email" | "other" | "unknown";
+export type SourceType =
+  | "direct"
+  | "referral"
+  | "social"
+  | "search"
+  | "email"
+  | "other"
+  | "unknown";
 export type DeviceType = "mobile" | "desktop" | "tablet" | "unknown";
 
 export interface User {

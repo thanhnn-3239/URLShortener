@@ -30,11 +30,17 @@ function hashIp(ip?: string | null): string | null {
   return createHash("sha256").update(ip).digest("hex");
 }
 
-export function parseDeviceSource(userAgent?: string | null, referer?: string | null) {
+export function parseDeviceSource(
+  userAgent?: string | null,
+  referer?: string | null
+) {
   return classifyDeviceSource(userAgent, referer);
 }
 
-export async function recordClick(shortLinkId: string, options: RecordClickOptions = {}): Promise<ClickEvent> {
+export async function recordClick(
+  shortLinkId: string,
+  options: RecordClickOptions = {}
+): Promise<ClickEvent> {
   const classification = parseDeviceSource(options.userAgent, options.referer);
 
   const clickEvent: ClickEvent = {

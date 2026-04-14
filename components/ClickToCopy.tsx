@@ -27,8 +27,12 @@ export function ClickToCopy({ value }: ClickToCopyProps) {
       >
         Copy
       </button>
-      {status === "success" ? <p className="text-sm font-medium text-emerald-700">Copied!</p> : null}
-      {status === "error" ? <p className="text-sm font-medium text-rose-700">Unable to copy</p> : null}
+      {status === "success" ? (
+        <p className="text-sm font-medium text-emerald-700">Copied!</p>
+      ) : null}
+      {status === "error" ? (
+        <p className="text-sm font-medium text-rose-700">Unable to copy</p>
+      ) : null}
     </div>
   );
 }

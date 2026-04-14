@@ -36,4 +36,20 @@ describe("POST /api/shorten", () => {
     expect(response.status).toBe(400);
     expect(data.error).toBe("invalid_params");
   });
+
+  it("returns 400 when JSON body is malformed", async () => {
+    resetTables();
+
+    const request = new Request("http://localhost:3000/api/shorten", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: "{"
+    });
+
+    const response = await POST(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(400);
+    expect(data.error).toBe("invalid_params");
+  });
 });

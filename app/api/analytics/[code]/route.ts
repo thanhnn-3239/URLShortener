@@ -1,6 +1,7 @@
-import { handleApiError } from "@/services/errorHandler";
+import { handleApiError, assertOrThrow } from "@/services/errorHandler";
 import { getPerLinkStats } from "@/services/analytics";
 import { successResponse } from "@/lib/response";
+import { withRequestLogging } from "@/lib/apiMiddleware";
 
 type RouteContext = {
   params: {
@@ -15,17 +16,22 @@ function toIsoDate(value: Date) {
 function getDateRange(url: URL) {
   const endDate = url.searchParams.get("end_date") ?? toIsoDate(new Date());
   const startDate =
-    url.searchParams.get("start_date") ?? toIsoDate(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
+    url.searchParams.get("start_date") ??
+    toIsoDate(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000));
 
   return { startDate, endDate };
 }
 
-export async function GET(request: Request, context: RouteContext) {
-  try {
-    const dateRange = getDateRange(new URL(request.url));
-    const stats = await getPerLinkStats(context.params.code, dateRange);
-    return successResponse(stats);
-  } catch (error) {
-    return handleApiError(error);
+export const GET = withRequestLogging<Request, RouteContext>(
+  "analytics_get",
+  async (request, context) => {
+    try {
+      assertOrThrow(Boolean(context?.params?.code), "Short code is required");
+      const dateRange = getDateRange(new URL(request.url));
+      const stats = await getPerLinkStats(context!.params.code, dateRange);
+      return successResponse(stats);
+    } catch (error) {
+      return handleApiError(error);
+    }
   }
-}
+);

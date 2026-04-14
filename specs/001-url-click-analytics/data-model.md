@@ -64,29 +64,32 @@
 
 **Table**: `short_links`
 
-| Column | Type | Constraints | Purpose |
-|---|---|---|---|
-| `id` | UUID | PRIMARY KEY, DEFAULT gen_random_uuid() | Unique identifier for internal references |
-| `code` | VARCHAR(8) | UNIQUE, NOT NULL | Human-friendly short code (Base62 encoded, 6-8 chars) |
-| `destination_url` | TEXT | NOT NULL | Original URL that the short link points to |
-| `created_at` | TIMESTAMP | NOT NULL, DEFAULT CURRENT_TIMESTAMP | When this short link was created |
-| `created_by` | UUID | NOT NULL, FK users.id (if multi-user) | Creator of the short link |
-| `expires_at` | TIMESTAMP | NULL, DEFAULT NULL | Optional expiration timestamp; NULL = no expiration |
-| `is_active` | BOOLEAN | NOT NULL, DEFAULT TRUE | Soft-delete flag (redirect returns 410 if false) |
-| `click_count` | INTEGER | NOT NULL, DEFAULT 0 | Denormalized count for quick dashboard access (computed, not authoritative) |
+| Column            | Type       | Constraints                            | Purpose                                                                     |
+| ----------------- | ---------- | -------------------------------------- | --------------------------------------------------------------------------- |
+| `id`              | UUID       | PRIMARY KEY, DEFAULT gen_random_uuid() | Unique identifier for internal references                                   |
+| `code`            | VARCHAR(8) | UNIQUE, NOT NULL                       | Human-friendly short code (Base62 encoded, 6-8 chars)                       |
+| `destination_url` | TEXT       | NOT NULL                               | Original URL that the short link points to                                  |
+| `created_at`      | TIMESTAMP  | NOT NULL, DEFAULT CURRENT_TIMESTAMP    | When this short link was created                                            |
+| `created_by`      | UUID       | NOT NULL, FK users.id (if multi-user)  | Creator of the short link                                                   |
+| `expires_at`      | TIMESTAMP  | NULL, DEFAULT NULL                     | Optional expiration timestamp; NULL = no expiration                         |
+| `is_active`       | BOOLEAN    | NOT NULL, DEFAULT TRUE                 | Soft-delete flag (redirect returns 410 if false)                            |
+| `click_count`     | INTEGER    | NOT NULL, DEFAULT 0                    | Denormalized count for quick dashboard access (computed, not authoritative) |
 
 **Indexes**:
+
 - PRIMARY KEY on `id`
 - UNIQUE on `code` (required for fast lookups during redirect)
 - BTREE on `created_at` (for sorting links by creation date)
 
 **Validations**:
+
 - `code`: Must be 6-8 alphanumeric characters (Base62), unique, not null
 - `destination_url`: Must be valid HTTP/HTTPS URL, not null
 - `created_by`: Must reference valid user ID (scope access control)
 - `expires_at`: If set, must be >= current timestamp
 
 **Sample Data**:
+
 ```sql
 INSERT INTO short_links (code, destination_url, created_by) VALUES
   ('abc123', 'https://example.com/long-page-with-many-params', UUID()),
@@ -101,32 +104,36 @@ INSERT INTO short_links (code, destination_url, created_by) VALUES
 
 **Table**: `click_events`
 
-| Column | Type | Constraints | Purpose |
-|---|---|---|---|
-| `id` | UUID | PRIMARY KEY, DEFAULT gen_random_uuid() | Unique identifier for event |
-| `short_link_id` | UUID | NOT NULL, FK short_links.id | Reference to short link (foreign key) |
-| `clicked_at` | TIMESTAMP | NOT NULL, DEFAULT CURRENT_TIMESTAMP | When the click occurred |
-| `source` | VARCHAR(50) | NOT NULL, DEFAULT 'unknown' | Source category (direct, referral, social, search, email, other, unknown) |
-| `device` | VARCHAR(50) | NOT NULL, DEFAULT 'unknown' | Device category (mobile, desktop, tablet, unknown) |
-| `ip_hash` | VARCHAR(64) | NULL | Hash of client IP (for duplicate detection, PII protection) |
-| `user_agent_summary` | VARCHAR(255) | NULL | Truncated User-Agent string (for debugging, not PII) |
+| Column               | Type         | Constraints                            | Purpose                                                                   |
+| -------------------- | ------------ | -------------------------------------- | ------------------------------------------------------------------------- |
+| `id`                 | UUID         | PRIMARY KEY, DEFAULT gen_random_uuid() | Unique identifier for event                                               |
+| `short_link_id`      | UUID         | NOT NULL, FK short_links.id            | Reference to short link (foreign key)                                     |
+| `clicked_at`         | TIMESTAMP    | NOT NULL, DEFAULT CURRENT_TIMESTAMP    | When the click occurred                                                   |
+| `source`             | VARCHAR(50)  | NOT NULL, DEFAULT 'unknown'            | Source category (direct, referral, social, search, email, other, unknown) |
+| `device`             | VARCHAR(50)  | NOT NULL, DEFAULT 'unknown'            | Device category (mobile, desktop, tablet, unknown)                        |
+| `ip_hash`            | VARCHAR(64)  | NULL                                   | Hash of client IP (for duplicate detection, PII protection)               |
+| `user_agent_summary` | VARCHAR(255) | NULL                                   | Truncated User-Agent string (for debugging, not PII)                      |
 
 **Indexes**:
+
 - PRIMARY KEY on `id`
 - BTREE on `short_link_id` (for per-link analytics queries)
 - BTREE on `clicked_at` (for time-range queries)
 - COMPOSITE on (`short_link_id`, `clicked_at`) (for dashboard aggregation)
 
 **Validations**:
+
 - `short_link_id`: Must reference valid, active short link
 - `clicked_at`: Must be <= current timestamp (disallow future dates)
 - `source`: Must be one of allowed categories
 - `device`: Must be one of allowed categories
 
 **Cascade Behavior**:
+
 - ON DELETE CASCADE from short_links (when link deleted, its events are removed)
 
 **Sample Data**:
+
 ```sql
 INSERT INTO click_events (short_link_id, source, device) VALUES
   (UUID(), 'direct', 'desktop'),
@@ -145,6 +152,7 @@ INSERT INTO click_events (short_link_id, source, device) VALUES
 **View**: `daily_clicks_mv`
 
 Defined via:
+
 ```sql
 CREATE MATERIALIZED VIEW daily_clicks_mv AS
 SELECT
@@ -160,6 +168,7 @@ GROUP BY 1, 2;
 **Purpose**: Serve dashboard daily totals without scanning click_events table.
 
 **Refresh Strategy**:
+
 - Refresh nightly (batch job at 2 AM UTC via cron/scheduler)
 - OR refresh on-demand after bulk click insert (if near real-time needed)
 
@@ -168,6 +177,7 @@ GROUP BY 1, 2;
 **View**: `weekly_clicks_mv`
 
 Defined via:
+
 ```sql
 CREATE MATERIALIZED VIEW weekly_clicks_mv AS
 SELECT
@@ -191,6 +201,7 @@ GROUP BY 1, 2;
 **Not a database table**, but a computed result returned by API endpoint `/api/dashboard`.
 
 **Composition**:
+
 - Date range (start_date, end_date) - user input
 - Time bucketing (daily or weekly) - user selection
 - Daily/weekly totals from materialized view
@@ -198,6 +209,7 @@ GROUP BY 1, 2;
 - Click breakdown by source and device (aggregated across selected range)
 
 **Sample Response**:
+
 ```json
 {
   "date_range": {
@@ -306,14 +318,15 @@ CREATE INDEX idx_weekly_clicks_mv_date ON weekly_clicks_mv(week_start_date);
 
 ## Relationships & Integrity
 
-| Relationship | Type | Constraint | Cascade |
-|---|---|---|---|
-| short_links → users (created_by) | N:1 | FK NOT NULL | ON DELETE CASCADE |
-| click_events → short_links (short_link_id) | N:1 | FK NOT NULL | ON DELETE CASCADE |
-| daily_clicks_mv → short_links | N:1 (derived) | View (no FK) | N/A |
-| weekly_clicks_mv → short_links | N:1 (derived) | View (no FK) | N/A |
+| Relationship                               | Type          | Constraint   | Cascade           |
+| ------------------------------------------ | ------------- | ------------ | ----------------- |
+| short_links → users (created_by)           | N:1           | FK NOT NULL  | ON DELETE CASCADE |
+| click_events → short_links (short_link_id) | N:1           | FK NOT NULL  | ON DELETE CASCADE |
+| daily_clicks_mv → short_links              | N:1 (derived) | View (no FK) | N/A               |
+| weekly_clicks_mv → short_links             | N:1 (derived) | View (no FK) | N/A               |
 
 **Data Consistency**:
+
 - All click_events must reference valid, active short_links
 - Materialized views are eventually consistent (refreshed nightly)
 - Denormalized `click_count` on short_links is updated asynchronously
@@ -323,6 +336,7 @@ CREATE INDEX idx_weekly_clicks_mv_date ON weekly_clicks_mv(week_start_date);
 ## Sequence Diagrams
 
 ### URL Creation Flow
+
 ```
 User Browser
     ↓
@@ -340,6 +354,7 @@ User copies short URL
 ```
 
 ### Click Tracking Flow
+
 ```
 User Browser
     ↓
@@ -357,6 +372,7 @@ Browser loads destination_url
 ```
 
 ### Dashboard Query Flow
+
 ```
 Dashboard Page
     ↓
@@ -378,6 +394,7 @@ Dashboard renders chart + table
 ## Migration & Deployment
 
 **Deployment Order**:
+
 1. Create users table (if not exists)
 2. Create short_links table with indexes
 3. Create click_events table with indexes
@@ -385,12 +402,16 @@ Dashboard renders chart + table
 5. Create scheduled job for nightly view refresh
 
 **Initial Data**:
+
 - No seed data; tables start empty
 - First short link creation triggers schema readiness
 
 **Monitoring**:
+
 - Track `click_events` row count growth
 - Monitor materialized view refresh time (should be <1 minute)
 - Alert if `short_links.click_count` diverges >1% from actual event count
+
+```
 
 ```

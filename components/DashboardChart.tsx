@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 import {
   LineChart,
   Line,
@@ -9,8 +9,8 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer,
-} from 'recharts';
+  ResponsiveContainer
+} from "recharts";
 
 export type DailyPoint = {
   date: string;
@@ -25,7 +25,7 @@ export type WeeklyPoint = {
 
 interface DashboardChartProps {
   data: DailyPoint[] | WeeklyPoint[];
-  groupBy?: 'daily' | 'weekly';
+  groupBy?: "daily" | "weekly";
   title?: string;
   color?: string;
   width?: string | number;
@@ -34,15 +34,18 @@ interface DashboardChartProps {
 
 export default function DashboardChart({
   data,
-  groupBy = 'daily',
-  title = 'Clicks Trend',
-  color = '#3b82f6',
-  width = '100%',
-  height = 300,
+  groupBy = "daily",
+  title = "Clicks Trend",
+  color = "#3b82f6",
+  width = "100%",
+  height = 300
 }: DashboardChartProps) {
   if (!data || data.length === 0) {
     return (
-      <div className="w-full flex items-center justify-center" style={{ height: typeof height === 'number' ? `${height}px` : height }}>
+      <div
+        className="w-full flex items-center justify-center"
+        style={{ height: typeof height === "number" ? `${height}px` : height }}
+      >
         <div className="text-center text-gray-500">
           <p className="text-lg font-semibold">No data available</p>
           <p className="text-sm">Try selecting a different date range</p>
@@ -51,31 +54,31 @@ export default function DashboardChart({
     );
   }
 
-  const chartData = data.map(point => {
-    if ('date' in point) {
+  const chartData = data.map((point) => {
+    if ("date" in point) {
       return {
         label: point.date,
-        clicks: point.clicks,
+        clicks: point.clicks
       };
     } else {
       return {
         label: `Week ${point.week}`,
         startDate: point.startDate,
-        clicks: point.clicks,
+        clicks: point.clicks
       };
     }
   });
-  const periodLabel = groupBy === 'weekly' ? 'Week' : 'Date';
+  const periodLabel = groupBy === "weekly" ? "Week" : "Date";
   const resolvedWidth =
-    typeof width === 'number'
+    typeof width === "number"
       ? width
-      : width.endsWith('%')
+      : width.endsWith("%")
         ? (width as `${number}%`)
-        : ('100%' as const);
+        : ("100%" as const);
   const resolvedHeight =
-    typeof height === 'number'
+    typeof height === "number"
       ? height
-      : height.endsWith('%')
+      : height.endsWith("%")
         ? (height as `${number}%`)
         : Number.parseInt(height, 10) || 300;
 
@@ -88,7 +91,9 @@ export default function DashboardChart({
       <h3 className="mb-4 text-lg font-semibold text-gray-900">{title}</h3>
 
       <div className="sr-only" aria-hidden="false">
-        {chartData.map((point) => `${point.label}: ${point.clicks} clicks`).join(', ')}
+        {chartData
+          .map((point) => `${point.label}: ${point.clicks} clicks`)
+          .join(", ")}
       </div>
 
       <ResponsiveContainer width={resolvedWidth} height={resolvedHeight}>
@@ -100,17 +105,17 @@ export default function DashboardChart({
           <XAxis
             dataKey="label"
             stroke="#6b7280"
-            style={{ fontSize: '12px' }}
-            label={{ value: periodLabel, position: 'insideBottom', offset: -2 }}
+            style={{ fontSize: "12px" }}
+            label={{ value: periodLabel, position: "insideBottom", offset: -2 }}
           />
-          <YAxis stroke="#6b7280" style={{ fontSize: '12px' }} />
+          <YAxis stroke="#6b7280" style={{ fontSize: "12px" }} />
           <Tooltip
             contentStyle={{
-              backgroundColor: '#fff',
+              backgroundColor: "#fff",
               border: `1px solid ${color}`,
-              borderRadius: '8px',
+              borderRadius: "8px"
             }}
-            formatter={(value) => [value, 'Clicks']}
+            formatter={(value) => [value, "Clicks"]}
           />
           <Legend />
           <Line
@@ -129,13 +134,18 @@ export default function DashboardChart({
         <div className="rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 p-4">
           <p className="text-sm font-medium text-gray-600">Total Clicks</p>
           <p className="mt-1 text-2xl font-bold text-blue-900">
-            {chartData.reduce((sum, point) => sum + point.clicks, 0).toLocaleString()}
+            {chartData
+              .reduce((sum, point) => sum + point.clicks, 0)
+              .toLocaleString()}
           </p>
         </div>
         <div className="rounded-lg bg-gradient-to-br from-green-50 to-green-100 p-4">
           <p className="text-sm font-medium text-gray-600">Average/Period</p>
           <p className="mt-1 text-2xl font-bold text-green-900">
-            {Math.round(chartData.reduce((sum, point) => sum + point.clicks, 0) / chartData.length)}
+            {Math.round(
+              chartData.reduce((sum, point) => sum + point.clicks, 0) /
+                chartData.length
+            )}
           </p>
         </div>
       </div>

@@ -22,7 +22,9 @@ describe("ClickToCopy", () => {
   });
 
   it("shows fallback error when clipboard API fails", async () => {
-    const writeText = vi.fn().mockRejectedValue(new Error("clipboard disabled"));
+    const writeText = vi
+      .fn()
+      .mockRejectedValue(new Error("clipboard disabled"));
     Object.defineProperty(navigator, "clipboard", {
       value: { writeText },
       configurable: true

@@ -1,12 +1,12 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
-import DateRangePicker from '@/components/DateRangePicker';
+import { describe, it, expect, vi } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import DateRangePicker from "@/components/DateRangePicker";
 
-describe('DateRangePicker Component', () => {
+describe("DateRangePicker Component", () => {
   const mockOnRangeChange = vi.fn();
 
-  describe('Rendering', () => {
-    it('should render date range picker', () => {
+  describe("Rendering", () => {
+    it("should render date range picker", () => {
       const { container } = render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -18,7 +18,7 @@ describe('DateRangePicker Component', () => {
       expect(container).toBeTruthy();
     });
 
-    it('should render daily/weekly toggle buttons', () => {
+    it("should render daily/weekly toggle buttons", () => {
       render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -31,7 +31,7 @@ describe('DateRangePicker Component', () => {
       expect(screen.getByText(/weekly/i)).toBeInTheDocument();
     });
 
-    it('should render start date input', () => {
+    it("should render start date input", () => {
       const { container } = render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -44,7 +44,7 @@ describe('DateRangePicker Component', () => {
       expect(startInput).toBeInTheDocument();
     });
 
-    it('should render end date input', () => {
+    it("should render end date input", () => {
       const { container } = render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -57,7 +57,7 @@ describe('DateRangePicker Component', () => {
       expect(inputs.length).toBeGreaterThanOrEqual(2);
     });
 
-    it('should have preset range buttons', () => {
+    it("should have preset range buttons", () => {
       render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -75,8 +75,8 @@ describe('DateRangePicker Component', () => {
     });
   });
 
-  describe('Date Input', () => {
-    it('should accept start date input', () => {
+  describe("Date Input", () => {
+    it("should accept start date input", () => {
       const { container } = render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -85,14 +85,16 @@ describe('DateRangePicker Component', () => {
         />
       );
 
-      const startInput = container.querySelector('input[type="date"]') as HTMLInputElement;
+      const startInput = container.querySelector(
+        'input[type="date"]'
+      ) as HTMLInputElement;
       if (startInput) {
-        fireEvent.change(startInput, { target: { value: '2026-04-05' } });
+        fireEvent.change(startInput, { target: { value: "2026-04-05" } });
         expect(mockOnRangeChange).toHaveBeenCalled();
       }
     });
 
-    it('should accept end date input', () => {
+    it("should accept end date input", () => {
       const { container } = render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -101,14 +103,16 @@ describe('DateRangePicker Component', () => {
         />
       );
 
-      const inputs = container.querySelectorAll('input[type="date"]') as NodeListOf<HTMLInputElement>;
+      const inputs = container.querySelectorAll(
+        'input[type="date"]'
+      ) as NodeListOf<HTMLInputElement>;
       if (inputs.length > 1) {
-        fireEvent.change(inputs[1], { target: { value: '2026-04-20' } });
+        fireEvent.change(inputs[1], { target: { value: "2026-04-20" } });
         expect(mockOnRangeChange).toHaveBeenCalled();
       }
     });
 
-    it('should validate end date is after start date', () => {
+    it("should validate end date is after start date", () => {
       const { container } = render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -118,16 +122,18 @@ describe('DateRangePicker Component', () => {
       );
 
       // Try to set end date before start date
-      const inputs = container.querySelectorAll('input[type="date"]') as NodeListOf<HTMLInputElement>;
+      const inputs = container.querySelectorAll(
+        'input[type="date"]'
+      ) as NodeListOf<HTMLInputElement>;
       if (inputs.length > 1) {
-        fireEvent.change(inputs[1], { target: { value: '2026-03-01' } });
+        fireEvent.change(inputs[1], { target: { value: "2026-03-01" } });
 
         // Should either prevent this or call onRangeChange with error
         expect(mockOnRangeChange).toHaveBeenCalled();
       }
     });
 
-    it('should disable dates after today', () => {
+    it("should disable dates after today", () => {
       const { container } = render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -137,15 +143,15 @@ describe('DateRangePicker Component', () => {
       );
 
       const inputs = container.querySelectorAll('input[type="date"]');
-      inputs.forEach(input => {
+      inputs.forEach((input) => {
         // Future dates should be disabled or handled
         expect(input).toBeTruthy();
       });
     });
   });
 
-  describe('Grouping Options', () => {
-    it('should toggle between daily and weekly view', () => {
+  describe("Grouping Options", () => {
+    it("should toggle between daily and weekly view", () => {
       render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -165,7 +171,7 @@ describe('DateRangePicker Component', () => {
       expect(mockOnRangeChange).toHaveBeenCalled();
     });
 
-    it('should highlight active grouping mode', () => {
+    it("should highlight active grouping mode", () => {
       const { container } = render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -176,10 +182,12 @@ describe('DateRangePicker Component', () => {
       );
 
       const dailyButton = screen.getByText(/daily/i);
-      expect(dailyButton.classList.toString()).toMatch(/active|selected|highlight/i);
+      expect(dailyButton.classList.toString()).toMatch(
+        /active|selected|highlight/i
+      );
     });
 
-    it('should maintain grouping when range changes', () => {
+    it("should maintain grouping when range changes", () => {
       const { rerender, container } = render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -190,9 +198,11 @@ describe('DateRangePicker Component', () => {
       );
 
       // Change date range
-      const inputs = container.querySelectorAll('input[type="date"]') as NodeListOf<HTMLInputElement>;
+      const inputs = container.querySelectorAll(
+        'input[type="date"]'
+      ) as NodeListOf<HTMLInputElement>;
       if (inputs.length > 0) {
-        fireEvent.change(inputs[0], { target: { value: '2026-03-01' } });
+        fireEvent.change(inputs[0], { target: { value: "2026-03-01" } });
       }
 
       // Weekly mode should still be active
@@ -201,7 +211,7 @@ describe('DateRangePicker Component', () => {
     });
   });
 
-  describe('Preset Ranges', () => {
+  describe("Preset Ranges", () => {
     it('should set "Last 7 days" preset', () => {
       render(
         <DateRangePicker
@@ -251,8 +261,8 @@ describe('DateRangePicker Component', () => {
     });
   });
 
-  describe('Callbacks', () => {
-    it('should call onRangeChange when start date changes', () => {
+  describe("Callbacks", () => {
+    it("should call onRangeChange when start date changes", () => {
       const { container } = render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -261,14 +271,16 @@ describe('DateRangePicker Component', () => {
         />
       );
 
-      const startInput = container.querySelector('input[type="date"]') as HTMLInputElement;
+      const startInput = container.querySelector(
+        'input[type="date"]'
+      ) as HTMLInputElement;
       if (startInput) {
-        fireEvent.change(startInput, { target: { value: '2026-04-05' } });
+        fireEvent.change(startInput, { target: { value: "2026-04-05" } });
         expect(mockOnRangeChange).toHaveBeenCalled();
       }
     });
 
-    it('should call onRangeChange with new date range', () => {
+    it("should call onRangeChange with new date range", () => {
       const { container } = render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -277,20 +289,22 @@ describe('DateRangePicker Component', () => {
         />
       );
 
-      const startInput = container.querySelector('input[type="date"]') as HTMLInputElement;
+      const startInput = container.querySelector(
+        'input[type="date"]'
+      ) as HTMLInputElement;
       if (startInput) {
-        fireEvent.change(startInput, { target: { value: '2026-04-10' } });
+        fireEvent.change(startInput, { target: { value: "2026-04-10" } });
 
         const calls = mockOnRangeChange.mock.calls;
         if (calls.length > 0) {
           const lastCall = calls[calls.length - 1][0];
-          expect(lastCall).toHaveProperty('startDate');
-          expect(lastCall).toHaveProperty('endDate');
+          expect(lastCall).toHaveProperty("startDate");
+          expect(lastCall).toHaveProperty("endDate");
         }
       }
     });
 
-    it('should pass groupBy option in callback', () => {
+    it("should pass groupBy option in callback", () => {
       render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -305,13 +319,13 @@ describe('DateRangePicker Component', () => {
 
       const calls = mockOnRangeChange.mock.calls;
       if (calls.length > 0) {
-        expect(calls[calls.length - 1][0]).toHaveProperty('groupBy');
+        expect(calls[calls.length - 1][0]).toHaveProperty("groupBy");
       }
     });
   });
 
-  describe('Accessibility', () => {
-    it('should have proper labels for date inputs', () => {
+  describe("Accessibility", () => {
+    it("should have proper labels for date inputs", () => {
       render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -325,7 +339,7 @@ describe('DateRangePicker Component', () => {
       expect(labels.length).toBeGreaterThan(0);
     });
 
-    it('should support keyboard navigation', () => {
+    it("should support keyboard navigation", () => {
       const { container } = render(
         <DateRangePicker
           startDate="2026-04-01"
@@ -334,9 +348,9 @@ describe('DateRangePicker Component', () => {
         />
       );
 
-      const buttons = container.querySelectorAll('button');
-      buttons.forEach(btn => {
-        expect(btn.getAttribute('tabindex')).not.toBe('-1');
+      const buttons = container.querySelectorAll("button");
+      buttons.forEach((btn) => {
+        expect(btn.getAttribute("tabindex")).not.toBe("-1");
       });
     });
   });

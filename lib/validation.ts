@@ -10,7 +10,10 @@ export function validateUrl(url: string): boolean {
   }
 }
 
-export function parseDeviceSource(userAgent?: string | null, referer?: string | null): {
+export function parseDeviceSource(
+  userAgent?: string | null,
+  referer?: string | null
+): {
   device: DeviceType;
   source: SourceType;
 } {

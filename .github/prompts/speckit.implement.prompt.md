@@ -15,7 +15,7 @@ This gate includes:
 3. `npm run test`
 4. `docker compose up -d --build`
 5. URL smoke checks:
-	1. `http://localhost:3000/` must return `200`
-	2. `http://localhost:3000/api/health` must return `200`
+   1. `http://localhost:3000/` must return `200`
+   2. `http://localhost:3000/api/health` must return `200`
 
 If any step fails, do not report completion.

@@ -36,6 +36,10 @@ export function toAppError(error: unknown): AppError {
     return error;
   }
 
+  if (error instanceof SyntaxError) {
+    return new ValidationError("Invalid JSON body");
+  }
+
   if (error instanceof Error) {
     return new AppError(error.message, "internal_error", 500);
   }
