@@ -16,12 +16,14 @@ Host: shrt.domain.com
 ```
 
 **Query Parameters**:
+
 - `start_date`: ISO 8601 date (e.g., 2026-03-13) - required
 - `end_date`: ISO 8601 date (e.g., 2026-04-13) - required, must be >= start_date
 - `bucket`: Time bucketing ('daily' or 'weekly') - optional, default: 'daily'
 - `limit`: Number of top links to return - optional, default: 20, max: 100
 
 **Validation Rules**:
+
 - `start_date` and `end_date` must be valid ISO 8601 dates
 - `end_date` >= `start_date`
 - Date range must not exceed 365 days
@@ -151,39 +153,39 @@ Host: shrt.domain.com
 
 ### Response Fields Explanation
 
-| Field | Type | Description |
-|---|---|---|
-| `request_id` | UUID | Unique request identifier for debugging |
-| `timestamp` | ISO 8601 | Server response time |
-| `period.start_date` | Date | Query start date |
-| `period.end_date` | Date | Query end date |
-| `period.bucket` | String | 'daily' or 'weekly' bucketing |
-| `period.days_in_range` | Integer | Number of calendar days in range |
-| `summary.total_clicks` | Integer | Sum of all clicks in date range |
-| `summary.total_short_urls` | Integer | Number of distinct short URLs that received clicks |
-| `summary.avg_clicks_per_link` | Float | Average clicks per short URL |
-| `summary.peak_day.date` | Date | Highest click volume date |
-| `summary.peak_day.clicks` | Integer | Click count on peak day |
-| `series[]` | Array | Time series data (one entry per day/week) |
-| `series[].date` | Date | Bucket date (start of day/week) |
-| `series[].clicks` | Integer | Total clicks for this bucket |
-| `series[].breakdown_source` | Object | Clicks by source category |
-| `series[].breakdown_device` | Object | Clicks by device category |
-| `top_links[]` | Array | Top 20 links by click count (user configurable) |
-| `top_links[].code` | String | Short code |
-| `top_links[].destination_url` | String | Original URL |
-| `top_links[].total_clicks` | Integer | Total clicks across date range |
-| `top_links[].rank` | Integer | Ranking (1 = most clicks) |
-| `top_links[].percentage_of_total` | Float | Percent of total clicks for this link |
-| `top_links[].source_breakdown` | Object | Clicks by source for this link |
-| `top_links[].device_breakdown` | Object | Clicks by device for this link |
-| `top_links[].created_at` | ISO 8601 | When short URL was created |
-| `aggregate_breakdown.source` | Object | Total clicks by source across all links |
-| `aggregate_breakdown.device` | Object | Total clicks by device across all links |
-| `insights.peak_source` | String | Source category with highest clicks |
-| `insights.peak_device` | String | Device category with highest clicks |
-| `insights.trend` | String | 'rising' / 'declining' / 'stable' |
-| `insights.percent_change_vs_previous_period` | Float | Percent change from same period last reference window |
+| Field                                        | Type     | Description                                           |
+| -------------------------------------------- | -------- | ----------------------------------------------------- |
+| `request_id`                                 | UUID     | Unique request identifier for debugging               |
+| `timestamp`                                  | ISO 8601 | Server response time                                  |
+| `period.start_date`                          | Date     | Query start date                                      |
+| `period.end_date`                            | Date     | Query end date                                        |
+| `period.bucket`                              | String   | 'daily' or 'weekly' bucketing                         |
+| `period.days_in_range`                       | Integer  | Number of calendar days in range                      |
+| `summary.total_clicks`                       | Integer  | Sum of all clicks in date range                       |
+| `summary.total_short_urls`                   | Integer  | Number of distinct short URLs that received clicks    |
+| `summary.avg_clicks_per_link`                | Float    | Average clicks per short URL                          |
+| `summary.peak_day.date`                      | Date     | Highest click volume date                             |
+| `summary.peak_day.clicks`                    | Integer  | Click count on peak day                               |
+| `series[]`                                   | Array    | Time series data (one entry per day/week)             |
+| `series[].date`                              | Date     | Bucket date (start of day/week)                       |
+| `series[].clicks`                            | Integer  | Total clicks for this bucket                          |
+| `series[].breakdown_source`                  | Object   | Clicks by source category                             |
+| `series[].breakdown_device`                  | Object   | Clicks by device category                             |
+| `top_links[]`                                | Array    | Top 20 links by click count (user configurable)       |
+| `top_links[].code`                           | String   | Short code                                            |
+| `top_links[].destination_url`                | String   | Original URL                                          |
+| `top_links[].total_clicks`                   | Integer  | Total clicks across date range                        |
+| `top_links[].rank`                           | Integer  | Ranking (1 = most clicks)                             |
+| `top_links[].percentage_of_total`            | Float    | Percent of total clicks for this link                 |
+| `top_links[].source_breakdown`               | Object   | Clicks by source for this link                        |
+| `top_links[].device_breakdown`               | Object   | Clicks by device for this link                        |
+| `top_links[].created_at`                     | ISO 8601 | When short URL was created                            |
+| `aggregate_breakdown.source`                 | Object   | Total clicks by source across all links               |
+| `aggregate_breakdown.device`                 | Object   | Total clicks by device across all links               |
+| `insights.peak_source`                       | String   | Source category with highest clicks                   |
+| `insights.peak_device`                       | String   | Device category with highest clicks                   |
+| `insights.trend`                             | String   | 'rising' / 'declining' / 'stable'                     |
+| `insights.percent_change_vs_previous_period` | Float    | Percent change from same period last reference window |
 
 ### Empty State Response (200 OK - No Data)
 
@@ -225,6 +227,7 @@ Host: shrt.domain.com
 ### Error Responses
 
 **400 Bad Request** - Invalid query parameters
+
 ```json
 {
   "error": "invalid_params",
@@ -234,6 +237,7 @@ Host: shrt.domain.com
 ```
 
 **400 Bad Request** - Date range exceeds limit
+
 ```json
 {
   "error": "invalid_range",
@@ -243,6 +247,7 @@ Host: shrt.domain.com
 ```
 
 **500 Internal Server Error** - Database or processing error
+
 ```json
 {
   "error": "internal_error",
@@ -277,12 +282,12 @@ The `series[]` array is intended for time-series visualization (line/bar chart),
 ```javascript
 // Example: React Chart.js component
 const ChartData = {
-  labels: response.series.map(s => s.date),
+  labels: response.series.map((s) => s.date),
   datasets: [
     {
-      label: 'Total Clicks',
-      data: response.series.map(s => s.clicks),
-      borderColor: 'rgb(75, 192, 192)',
+      label: "Total Clicks",
+      data: response.series.map((s) => s.clicks),
+      borderColor: "rgb(75, 192, 192)",
       tension: 0.1
     }
   ]
@@ -296,6 +301,7 @@ The `top_links[]` array is intended for table display with sorting/filtering cap
 ### Empty State Handling
 
 If `summary.total_clicks === 0`, render empty state message with suggestion to:
+
 - Extend date range
 - Check recent short URL creations
 - Verify short URLs are being shared/accessed

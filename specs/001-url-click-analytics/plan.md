@@ -21,22 +21,23 @@ Technical approach: Full-stack TypeScript with Next.js API routes for backend lo
 **Target Platform**: Web (Browser + Server), Vercel or CloudFlare Workers deployment
 **Project Type**: Web service (full-stack Next.js application)
 **Performance Goals**:
-  - Redirect response time: p95 <50ms for short URL retrieval and redirect
-  - Dashboard load: p95 <3s for 30-day date range (from spec SC-004)
-  - Analytics accuracy: <1% daily difference between clicks and redirects (from spec SC-003)
-  - Throughput: Support 1000+ concurrent short URL creations and 10k+ simultaneous redirect requests
-**Constraints**:
-  - Redirect latency <50ms (200-250ms total with cold start acceptable for dashboard)
-  - Memory footprint <128MB per serverless function
-  - Database connection pooling to manage concurrent analytics writes
-**Scale/Scope**:
-  - Initial: 10k-100k short URLs in alpha, <1M clicks/day projected
-  - User story coverage: 3 independent, testable slices (P1 create/redirect, P2 click tracking, P3 dashboard)
-  - Data modeling: 4 key entities (Short Link, Click Event, Analytics Aggregate, Dashboard View)
+
+- Redirect response time: p95 <50ms for short URL retrieval and redirect
+- Dashboard load: p95 <3s for 30-day date range (from spec SC-004)
+- Analytics accuracy: <1% daily difference between clicks and redirects (from spec SC-003)
+- Throughput: Support 1000+ concurrent short URL creations and 10k+ simultaneous redirect requests
+  **Constraints**:
+- Redirect latency <50ms (200-250ms total with cold start acceptable for dashboard)
+- Memory footprint <128MB per serverless function
+- Database connection pooling to manage concurrent analytics writes
+  **Scale/Scope**:
+- Initial: 10k-100k short URLs in alpha, <1M clicks/day projected
+- User story coverage: 3 independent, testable slices (P1 create/redirect, P2 click tracking, P3 dashboard)
+- Data modeling: 4 key entities (Short Link, Click Event, Analytics Aggregate, Dashboard View)
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 - **Code Quality Gate** ✅ PASS
   - Impact: Core modules: API routes for short URL CRUD, redirect handler, click tracking, analytics aggregation
@@ -92,7 +93,7 @@ Technical approach: Full-stack TypeScript with Next.js API routes for backend lo
 
 ## Post-Design Constitution Re-Check
 
-*Confirm all gates still pass after Phase 1 design completion*
+_Confirm all gates still pass after Phase 1 design completion_
 
 - ✅ **Code Quality**: Data model entities are clearly defined with explicit validation rules and relationships. API contracts include detailed request/response schemas with error handling. No complexity added; design remains simple and focused.
 
@@ -208,6 +209,7 @@ specs/001-url-click-analytics/
 ```
 
 **Structure Decision**:
+
 - **Backend**: Next.js API routes (`/app/api/*`) for serverless deployment (Vercel/CloudFlare Workers compatible)
 - **Frontend**: Next.js App Router pages and React components (same monorepo, deployed together)
 - **Database**: Supabase PostgreSQL with materialized views for fast dashboard aggregations
@@ -217,6 +219,7 @@ specs/001-url-click-analytics/
 - **No separate backend project needed**: Everything unified in single Next.js app for faster iteration and lower operational burden
 
 **Rationale for structure**:
+
 - Single Next.js project reduces deployment complexity and keeps frontend/backend in sync
 - Materialized views in PostgreSQL (rather than application caching) ensure analytics consistency
 - Service layer functions keep API routes thin and testable
@@ -227,11 +230,11 @@ specs/001-url-click-analytics/
 
 > **No violations identified**: All Constitution Check gates passed. This section documents design trade-offs that maintain simplicity while satisfying performance and functionality requirements.
 
-| Deliberate Choice | Justification | Alternative Not Chosen |
-|---|---|---|
-| Single Next.js monorepo (no separate backend) | Reduces deployment complexity, keeps FE/BE in sync, faster iteration | Microservices (would increase operational burden and latency between services) |
-| Supabase PostgreSQL materialized views | Delegate aggregation to database (faster, consistent), no application-level caching overhead | Redis caching (adds operational complexity, eventual consistency risk) |
-| TypeScript interfaces for layer contracts | Ensures type safety at compile-time, prevents runtime surprises in data flow | Looser typing (would increase debugging difficulty as system grows) |
-| Vercel/CloudFlare Workers as primary deployments | Native support for Next.js, minimal configuration, auto-scaling, global edge distribution | Self-hosted (would require more ops work, less reliable scaling) |
+| Deliberate Choice                                | Justification                                                                                | Alternative Not Chosen                                                         |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Single Next.js monorepo (no separate backend)    | Reduces deployment complexity, keeps FE/BE in sync, faster iteration                         | Microservices (would increase operational burden and latency between services) |
+| Supabase PostgreSQL materialized views           | Delegate aggregation to database (faster, consistent), no application-level caching overhead | Redis caching (adds operational complexity, eventual consistency risk)         |
+| TypeScript interfaces for layer contracts        | Ensures type safety at compile-time, prevents runtime surprises in data flow                 | Looser typing (would increase debugging difficulty as system grows)            |
+| Vercel/CloudFlare Workers as primary deployments | Native support for Next.js, minimal configuration, auto-scaling, global edge distribution    | Self-hosted (would require more ops work, less reliable scaling)               |
 
 **Commitment**: Implementation will follow this structure and deployment model. If complexity arises during development, evaluate whether simplification is possible (remove features, defer to Phase 2) rather than adding abstraction layers.

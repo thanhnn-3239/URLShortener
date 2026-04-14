@@ -1,7 +1,9 @@
+import { randomUUID } from "node:crypto";
 import { BASE_URL, SHORT_CODE_LENGTH } from "@/lib/constants";
 import { ConflictError, NotFoundError, ValidationError } from "@/lib/errors";
+import { generateShortCode } from "@/lib/shortCode";
 import type { ShortLink } from "@/lib/types";
-import { generateShortCode, validateUrl } from "@/lib/validation";
+import { validateUrl } from "@/lib/validation";
 import { insert, select, update } from "@/lib/database";
 
 type DbShortLink = {
@@ -9,13 +11,14 @@ type DbShortLink = {
   code: string;
   destination_url: string;
   created_at: string;
-  created_by: string;
+  created_by: string | null;
   expires_at: string | null;
   is_active: boolean;
   click_count: number;
 };
 
 const SHORT_LINK_TABLE = "short_links";
+const incrementLocks = new Map<string, Promise<void>>();
 
 function toShortLink(row: DbShortLink): ShortLink {
   return {
@@ -23,7 +26,7 @@ function toShortLink(row: DbShortLink): ShortLink {
     code: row.code,
     destination_url: row.destination_url,
     created_at: row.created_at,
-    created_by: row.created_by,
+    created_by: row.created_by ?? "anonymous",
     expires_at: row.expires_at,
     is_active: row.is_active,
     click_count: row.click_count
@@ -34,30 +37,28 @@ function nowIso(): string {
   return new Date().toISOString();
 }
 
-function generateId(): string {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-}
-
 export async function createShortUrl(
   destinationUrl: string,
-  options?: { createdBy?: string; expiresAt?: string | null }
+  options?: { createdBy?: string | null; expiresAt?: string | null }
 ): Promise<ShortLink> {
   if (!validateUrl(destinationUrl)) {
     throw new ValidationError("Destination URL must be valid HTTP/HTTPS URL");
   }
 
-  const createdBy = options?.createdBy ?? "anonymous";
+  const createdBy = options?.createdBy ?? null;
 
   for (let attempt = 0; attempt < 3; attempt += 1) {
     const code = generateShortCode(SHORT_CODE_LENGTH);
-    const existing = (await select(SHORT_LINK_TABLE, { code })) as DbShortLink[];
+    const existing = (await select(SHORT_LINK_TABLE, {
+      code
+    })) as DbShortLink[];
 
     if (existing.length > 0) {
       continue;
     }
 
     const row: DbShortLink = {
-      id: generateId(),
+      id: randomUUID(),
       code,
       destination_url: destinationUrl,
       created_at: nowIso(),
@@ -71,7 +72,9 @@ export async function createShortUrl(
     return toShortLink(row);
   }
 
-  throw new ConflictError("Unable to generate unique short code after 3 attempts. Please try again.");
+  throw new ConflictError(
+    "Unable to generate unique short code after 3 attempts. Please try again."
+  );
 }
 
 export async function resolveShortUrl(code: string): Promise<ShortLink> {
@@ -90,14 +93,27 @@ export async function resolveShortUrl(code: string): Promise<ShortLink> {
 }
 
 export async function incrementClickCount(code: string): Promise<void> {
-  const found = (await select(SHORT_LINK_TABLE, { code })) as DbShortLink[];
-  const row = found[0];
+  const previous = incrementLocks.get(code) ?? Promise.resolve();
+  const next = previous.then(async () => {
+    const found = (await select(SHORT_LINK_TABLE, { code })) as DbShortLink[];
+    const row = found[0];
 
-  if (!row) {
-    return;
-  }
+    if (!row) {
+      return;
+    }
 
-  await update(SHORT_LINK_TABLE, { code }, { click_count: row.click_count + 1 });
+    await update(
+      SHORT_LINK_TABLE,
+      { code },
+      { click_count: row.click_count + 1 }
+    );
+  });
+
+  incrementLocks.set(
+    code,
+    next.catch(() => undefined)
+  );
+  await next;
 }
 
 export function buildShortUrl(code: string): string {

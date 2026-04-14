@@ -26,6 +26,7 @@ Sync Impact Report
 ## Core Principles
 
 ### I. Code Quality Is Non-Negotiable
+
 All production code MUST be readable, deterministic, and maintainable. Every change MUST include
 clear naming, focused functions, and explicit error handling at boundaries. Public interfaces MUST
 be documented at the point of definition. Complexity increases (new abstractions, indirection,
@@ -35,6 +36,7 @@ Rationale: code quality is the primary control against regressions, hidden defec
 slowdown as the product grows.
 
 ### II. Testing Defines Done
+
 No feature or fix is complete unless automated tests prove behavior. Each user story MUST include:
 unit tests for core logic, integration tests for boundary interactions, and regression tests for
 reported defects. New behavior MUST be introduced with failing tests first or, where impractical,
@@ -43,6 +45,7 @@ tests created in the same pull request before merge. CI MUST block merge on fail
 Rationale: tests are the only scalable way to preserve reliability while increasing feature velocity.
 
 ### III. UX Consistency Across Surfaces
+
 User-facing behavior MUST align with established interaction patterns, terminology, and visual
 states across the product. New UI work MUST define and verify loading, empty, success, and error
 states. Content and controls MUST remain consistent with existing flows unless a deliberate
@@ -51,6 +54,7 @@ cross-product UX update is approved.
 Rationale: consistent UX reduces user confusion, support load, and onboarding friction.
 
 ### IV. Performance Budgets Are Requirements
+
 Performance expectations MUST be defined as measurable budgets for each feature (for example,
 latency, throughput, and resource usage). Changes that affect critical paths MUST include evidence
 that budgets are met under representative conditions. A change that exceeds a budget MUST not ship
@@ -60,6 +64,7 @@ Rationale: performance failures are user-facing quality failures and MUST be man
 requirements.
 
 ### V. Maintainability Through Simplicity and Reviewability
+
 Solutions MUST prefer the simplest design that satisfies requirements. Pull requests MUST remain
 reviewable in scope and include rationale for non-obvious decisions. Duplication SHOULD be removed
 when it materially increases maintenance cost; premature abstraction MUST be avoided.
@@ -90,11 +95,13 @@ Amendments require: (1) a written proposal in pull request form, (2) impact anal
 templates and active specs, and (3) explicit maintainer approval.
 
 Versioning policy:
+
 - MAJOR for backward-incompatible governance changes or principle removals/redefinitions.
 - MINOR for adding a principle/section or materially expanding mandatory guidance.
 - PATCH for clarifications and editorial improvements without semantic policy change.
 
 Compliance review expectations:
+
 - Every plan, spec, and tasks artifact MUST include a constitution alignment check.
 - Every pull request review MUST confirm compliance or document approved exceptions.
 - Quarterly governance review SHOULD verify this constitution still matches delivery practice and

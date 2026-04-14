@@ -1,0 +1,111 @@
+openapi: 3.0.3
+info:
+  title: URL Shortener API
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+  /api/shorten:
+    post:
+      summary: Create short URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [destination_url]
+              properties:
+                destination_url:
+                  type: string
+                  format: uri
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Invalid URL
+  /api/redirect/{code}:
+    get:
+      summary: Redirect and record click
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+      responses:
+        "302":
+          description: Redirect
+        "404":
+          description: Not found
+  /api/analytics/{code}:
+    get:
+      summary: Per-link analytics
+      parameters:
+        - in: path
+          name: code
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: start_date
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: end_date
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Analytics payload
+        "400":
+          description: Invalid params
+        "404":
+          description: Not found
+  /api/dashboard:
+    get:
+      summary: Dashboard analytics
+      parameters:
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: groupBy
+          schema:
+            type: string
+            enum: [daily, weekly]
+        - in: query
+          name: refresh
+          schema:
+            type: string
+            description: Force materialized-view refresh (1|true|yes)
+      responses:
+        "200":
+          description: Dashboard payload
+        "400":
+          description: Invalid params
+        "500":
+          description: Internal error
