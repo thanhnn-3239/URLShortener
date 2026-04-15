@@ -36,9 +36,18 @@ export function ShortenForm() {
         },
         body: JSON.stringify({ destination_url: destinationUrl })
       });
-      const payload = (await response.json()) as FormResult & {
-        message?: string;
-      };
+
+      let payload: FormResult & { message?: string };
+      try {
+        payload = (await response.json()) as FormResult & {
+          message?: string;
+        };
+      } catch {
+        // If response is not JSON (e.g., HTML error page), use status message
+        throw new Error(
+          `Server error (${response.status}): ${response.statusText || "Unknown error"}`
+        );
+      }
 
       if (!response.ok) {
         throw new Error(payload.message ?? "Failed to create short URL");

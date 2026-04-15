@@ -34,3 +34,65 @@ export interface ClickEvent {
   ip_hash: string | null;
   user_agent_summary: string | null;
 }
+
+/**
+ * Environment validation types
+ * Defines the structure for deployment environment configuration and validation
+ */
+
+export type EnvironmentType = "production" | "preview" | "local";
+
+export interface EnvVariable {
+  name: string;
+  purpose: string;
+  required: boolean;
+  format?: string;
+  valuePattern?: RegExp;
+  example: string;
+  sourced: string;
+}
+
+export interface EnvironmentProfile {
+  name: EnvironmentType;
+  environmentType: EnvironmentType;
+  requiredVariables: EnvVariable[];
+  isProduction: boolean;
+  healthCheckEnabled: boolean;
+  validatedAt?: string;
+}
+
+export interface ConfigurationError extends Error {
+  code: string;
+  severity: "critical" | "warning";
+  variable?: string;
+  hint?: string;
+  location?: string;
+  timestamp?: string;
+}
+
+export interface HealthCheckResult {
+  status: "healthy" | "unhealthy";
+  database: "connected" | "disconnected" | "unreachable";
+  environment: "validated" | "invalid";
+  errors: Array<{
+    code: string;
+    severity: string;
+    variable?: string;
+    message: string;
+    hint: string;
+    location: string;
+  }>;
+  warnings: string[];
+  timestamp: string;
+  responseTime: number;
+}
+
+export interface DeploymentVerificationChecklist {
+  environmentVariablesSet: boolean;
+  healthCheckPassed: boolean;
+  databaseConnected: boolean;
+  shortenEndpointWorks: boolean;
+  redirectEndpointWorks: boolean;
+  dashboardAccessible: boolean;
+  all: boolean;
+}

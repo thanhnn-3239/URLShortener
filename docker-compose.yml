@@ -60,8 +60,9 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV:-development}
       NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:-http://localhost:5432}
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY:-anon-key}
-      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-service-role-key}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxvY2FsLWRldiIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNjU0Njk1MjAwLCJleHAiOjE5NjMyNzEyMDB9.test-local-anon-key-local-development-only}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxvY2FsLWRldiIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNjU0Njk1MjAwLCJleHAiOjE5NjMyNzEyMDB9.test-local-anon-key-local-development-only}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxvY2FsLWRldiIsInJvbGUiOiJzZXJ2aWNlX3JvbGUiLCJpYXQiOjE2NTQ2OTUyMDAsImV4cCI6MTk2MzI3MTIwMH0.test-local-service-role-key-local-development-only}
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-postgres}
       NEXT_PUBLIC_SHORT_URL_BASE: ${NEXT_PUBLIC_SHORT_URL_BASE:-http://localhost:3000}
       SHORT_CODE_LENGTH: ${SHORT_CODE_LENGTH:-6}
