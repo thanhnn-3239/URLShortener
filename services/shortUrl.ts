@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { BASE_URL, SHORT_CODE_LENGTH } from "@/lib/constants";
+import { SHORT_CODE_LENGTH } from "@/lib/constants";
 import { ConflictError, NotFoundError, ValidationError } from "@/lib/errors";
 import { generateShortCode } from "@/lib/shortCode";
 import type { ShortLink } from "@/lib/types";
@@ -116,6 +116,27 @@ export async function incrementClickCount(code: string): Promise<void> {
   await next;
 }
 
-export function buildShortUrl(code: string): string {
-  return `${BASE_URL}/${code}`;
+function resolveBaseUrl(requestUrl?: string): string {
+  const configuredBaseUrl = process.env.NEXT_PUBLIC_SHORT_URL_BASE;
+  if (configuredBaseUrl) {
+    return configuredBaseUrl.replace(/\/+$/, "");
+  }
+
+  if (requestUrl) {
+    try {
+      return new URL(requestUrl).origin;
+    } catch {
+      // ignore invalid URL input and continue fallback chain
+    }
+  }
+
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+
+  return "http://localhost:3000";
+}
+
+export function buildShortUrl(code: string, requestUrl?: string): string {
+  return `${resolveBaseUrl(requestUrl)}/${code}`;
 }

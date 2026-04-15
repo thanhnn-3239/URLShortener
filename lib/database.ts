@@ -1,4 +1,6 @@
 import { Pool, type QueryResultRow } from "pg";
+import { validateEnvironment } from "./envValidation";
+import { ConfigurationError } from "./errors";
 
 type Primitive = string | number | boolean | null;
 type Row = Record<string, Primitive>;
@@ -6,6 +8,42 @@ type Row = Record<string, Primitive>;
 const tables = new Map<string, Row[]>();
 const IDENTIFIER_PATTERN = /^[a-z_][a-z0-9_]*$/i;
 let pool: Pool | null = null;
+
+/**
+ * Environment validation happens at module import time (not lazily)
+ * This ensures fail-fast on misconfigurations during app startup
+ * For local development (NODE_ENV=test or no DATABASE_URL), validation is skipped
+ */
+function validateEnvAtStartup() {
+  const shouldUseInMemory =
+    process.env.NODE_ENV === "test" || !process.env.DATABASE_URL;
+
+  if (!shouldUseInMemory) {
+    try {
+      const profile = validateEnvironment();
+      // Log validation success to track startup
+      console.log(
+        `[db] Environment validated for ${profile.environmentType} deployment`
+      );
+    } catch (error) {
+      // Log critical errors to stderr before throwing
+      if (error instanceof ConfigurationError) {
+        console.error("[db] CRITICAL: Configuration validation failed");
+        console.error(`[db] Code: ${error.configCode}`);
+        console.error(`[db] Variable: ${error.variable}`);
+        console.error(`[db] Message: ${error.message}`);
+        console.error(`[db] Hint: ${error.hint}`);
+        console.error(`[db] Location: ${error.location}`);
+      } else if (error instanceof Error) {
+        console.error("[db] CRITICAL: Environment validation error:", error.message);
+      }
+      throw error;
+    }
+  }
+}
+
+// Validate environment at module load time
+validateEnvAtStartup();
 
 function shouldUseInMemoryDatabase() {
   return process.env.NODE_ENV === "test" || !process.env.DATABASE_URL;
@@ -197,4 +235,18 @@ export async function replaceTable(table: string, rows: Row[]): Promise<void> {
 
 export function resetTables() {
   tables.clear();
+}
+
+/**
+ * Execute a raw SQL query
+ * Used by health check endpoint and other specialized queries
+ * In test environment, returns a simple success indicator
+ */
+export async function query(queryText: string, values: Primitive[] = []): Promise<Row[]> {
+  if (shouldUseInMemoryDatabase()) {
+    // In test mode, return a mock result
+    return [{ "?column?": 1 }];
+  }
+
+  return queryRows(queryText, values);
 }

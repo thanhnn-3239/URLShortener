@@ -62,7 +62,7 @@ export const POST = withRequestLogging(
         {
           id: shortLink.id,
           code: shortLink.code,
-          short_url: buildShortUrl(shortLink.code),
+          short_url: buildShortUrl(shortLink.code, request.url),
           destination_url: shortLink.destination_url,
           created_at: shortLink.created_at,
           expires_at: shortLink.expires_at
